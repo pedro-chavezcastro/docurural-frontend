@@ -1,4 +1,4 @@
-import { User } from './user.model';
+import { AuthenticatedUser } from './user.model';
 
 export interface LoginRequest {
   email: string;
@@ -9,7 +9,7 @@ export interface LoginResponse {
   token: string;
   tokenType: string;
   expiresIn: number;
-  user: User;
+  user: AuthenticatedUser;
 }
 
 export interface LogoutResponse {
@@ -18,6 +18,6 @@ export interface LogoutResponse {
 
 export interface AuthState {
   token: string | null;
-  user: User | null;
+  user: AuthenticatedUser | null;
   expiresAt: number | null;
 }

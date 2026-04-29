@@ -1,8 +1,15 @@
 import { Role } from './role.model';
+import { UserStatus } from './user-status.model';
 
-export interface User {
+export interface AuthenticatedUser {
   id: number;
   fullName: string;
   email: string;
   role: Role;
+}
+
+export interface User extends AuthenticatedUser {
+  status: UserStatus;
+  createdAt: string;
+  lastLogin: string | null;
 }
