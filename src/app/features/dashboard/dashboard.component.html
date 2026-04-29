@@ -57,7 +57,7 @@
         <div class="sb-user__avatar" aria-hidden="true">{{ userInitials() }}</div>
         <div class="sb-user__info">
           <div class="sb-user__name">{{ currentUser()?.fullName }}</div>
-          <div class="sb-user__role">{{ roleLabel() }}</div>
+          <div class="sb-user__role">{{ currentUser()?.role | roleLabel }}</div>
         </div>
       </div>
       <button class="sb-user__logout" type="button" (click)="onLogout()">

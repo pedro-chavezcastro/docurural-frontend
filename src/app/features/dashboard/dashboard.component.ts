@@ -2,12 +2,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/services/auth.service';
-import { ROLE_LABELS } from '../../core/models/role.model';
+import { RoleLabelPipe } from '../../shared/pipes/role-label.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, RoleLabelPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -24,11 +24,6 @@ export class DashboardComponent {
       .slice(0, 2)
       .map((w) => w[0].toUpperCase())
       .join('');
-  });
-
-  protected readonly roleLabel = computed(() => {
-    const role = this.currentUser()?.role;
-    return role ? ROLE_LABELS[role] : '';
   });
 
   protected readonly isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
