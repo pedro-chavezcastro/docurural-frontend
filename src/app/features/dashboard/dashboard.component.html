@@ -1,0 +1,115 @@
+<!-- Overlay mobile -->
+@if (sidebarOpen()) {
+  <div class="overlay" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+}
+
+<div class="layout">
+
+  <!-- ── Sidebar ────────────────────────────────────────────────── -->
+  <aside class="sidebar" [class.sidebar--open]="sidebarOpen()">
+
+    <!-- Logo -->
+    <div class="sb-logo">
+      <div class="sb-logo__icon" aria-hidden="true">
+        <mat-icon>description</mat-icon>
+      </div>
+      <div>
+        <div class="sb-logo__name">DocuRural</div>
+        <div class="sb-logo__sub">IERD Miña y Ticha</div>
+      </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="sb-nav" aria-label="Navegación principal">
+      <div class="sb-nav__section">Principal</div>
+      <a class="sb-nav__item" routerLink="/dashboard" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
+        <mat-icon>description</mat-icon>
+        <span>Documentos</span>
+        <span class="sb-badge">Sprint 2</span>
+      </button>
+      <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
+        <mat-icon>search</mat-icon>
+        <span>Buscar</span>
+      </button>
+
+      @if (isAdmin()) {
+        <div class="sb-nav__section sb-nav__section--admin">Administración</div>
+        <a class="sb-nav__item" routerLink="/users" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
+          <mat-icon>group</mat-icon>
+          <span>Usuarios</span>
+          <span class="sb-admin-badge">ADMIN</span>
+        </a>
+        <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
+          <mat-icon>sell</mat-icon>
+          <span>Categorías</span>
+          <span class="sb-admin-badge">ADMIN</span>
+        </button>
+      }
+    </nav>
+
+    <!-- Bloque de usuario -->
+    <div class="sb-user">
+      <div class="sb-user__card">
+        <div class="sb-user__avatar" aria-hidden="true">{{ userInitials() }}</div>
+        <div class="sb-user__info">
+          <div class="sb-user__name">{{ currentUser()?.fullName }}</div>
+          <div class="sb-user__role">{{ roleLabel() }}</div>
+        </div>
+      </div>
+      <button class="sb-user__logout" type="button" (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Área principal ─────────────────────────────────────────── -->
+  <div class="main-wrap">
+
+    <!-- Top bar móvil -->
+    <header class="topbar">
+      <button class="topbar__menu" type="button" (click)="sidebarOpen.set(!sidebarOpen())" aria-label="Abrir menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="topbar__brand">
+        <div class="topbar__brand-icon" aria-hidden="true">
+          <mat-icon>description</mat-icon>
+        </div>
+        <span class="topbar__brand-name">DocuRural</span>
+      </div>
+      <div class="topbar__avatar" aria-hidden="true">{{ userInitials() }}</div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="main">
+      <!-- Cabecera de página -->
+      <div class="page-header">
+        <div>
+          <p class="page-header__date">{{ today }}</p>
+          <h1 class="page-header__title">Hola, {{ currentUser()?.fullName?.split(' ')?.[0] }}</h1>
+          <p class="page-header__subtitle">Bienvenido al sistema de gestión documental</p>
+        </div>
+      </div>
+
+      <!-- Tarjeta de bienvenida -->
+      <div class="welcome-card">
+        <div class="welcome-card__icon" aria-hidden="true">
+          <mat-icon>folder_open</mat-icon>
+        </div>
+        <div class="welcome-card__body">
+          <h2 class="welcome-card__title">Sistema listo</h2>
+          <p class="welcome-card__text">
+            El repositorio documental de la IERD Miña y Ticha está configurado y listo para usar.
+            Las secciones de documentos, búsqueda y estadísticas estarán disponibles en los
+            siguientes sprints.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</div>
