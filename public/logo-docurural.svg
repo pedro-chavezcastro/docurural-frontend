@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="72" viewBox="0 0 280 72" fill="none">
+  <g transform="translate(4,10)">
+    <rect x="6" y="4" width="36" height="44" rx="4" fill="#EBF3FB" stroke="#2E6DA4" stroke-width="2"></rect>
+    <rect x="0" y="10" width="36" height="42" rx="4" fill="#FFFFFF" stroke="#2E6DA4" stroke-width="2"></rect>
+    <line x1="6" y1="20" x2="26" y2="20" stroke="#2E6DA4" stroke-width="2" stroke-linecap="round"></line>
+    <line x1="6" y1="28" x2="30" y2="28" stroke="#2E6DA4" stroke-width="2" stroke-linecap="round"></line>
+    <line x1="6" y1="36" x2="22" y2="36" stroke="#2E6DA4" stroke-width="2" stroke-linecap="round"></line>
+    <path d="M 2 44 Q 24 22 50 40" stroke="#3A8A3F" stroke-width="3.2" stroke-linecap="round" fill="none"></path>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="66" y="40" font-size="26" font-weight="700" fill="#1A1A2E" letter-spacing="-0.5">Docu</text>
+    <text x="138" y="40" font-size="26" font-weight="700" fill="#2E6DA4" letter-spacing="-0.5">Rural</text>
+  </g>
+</svg>

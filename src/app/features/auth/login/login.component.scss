@@ -1,0 +1,257 @@
+// Fondo de página con patrón de puntos (desktop)
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 48px 24px;
+  box-sizing: border-box;
+  background-color: var(--color-bg-app);
+  background-image: radial-gradient(circle at 1px 1px, rgba(46, 109, 164, 0.08) 1px, transparent 0);
+  background-size: 24px 24px;
+
+  @media (max-width: 600px) {
+    padding: 24px 16px;
+    background-image: none;
+  }
+}
+
+// Tarjeta central
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 36px 36px 40px;
+  box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    padding: 28px 24px 32px;
+    max-width: 100%;
+  }
+}
+
+// Logo y subtítulo
+.logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.logo {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+
+.tagline {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.45;
+  max-width: 280px;
+}
+
+// Banners de feedback
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  line-height: 1.45;
+  margin-bottom: 18px;
+
+  &--error {
+    background: var(--color-error-light);
+    border: 1px solid var(--color-error-border);
+    color: var(--color-error-text);
+    align-items: center;
+  }
+
+  &--warning {
+    background: var(--color-warning-light);
+    border: 1px solid var(--color-warning-border);
+    color: var(--color-warning-text);
+    align-items: flex-start;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+}
+
+.banner__title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+// Campos del formulario
+.field {
+  margin-bottom: 16px;
+
+  &--password {
+    margin-bottom: 24px;
+  }
+}
+
+.field__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &--error .field__input {
+    border-color: var(--color-error);
+    background-color: #fff;
+  }
+}
+
+.field__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  display: flex;
+  pointer-events: none;
+}
+
+.field__input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  padding: 12px 44px 12px 40px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid var(--color-border);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--easing-standard),
+              box-shadow var(--duration-fast) var(--easing-standard);
+  line-height: 1.4;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+  }
+
+  .field__control--error &:focus {
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.20);
+  }
+}
+
+.field__toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color var(--duration-fast) var(--easing-standard),
+              background var(--duration-fast) var(--easing-standard);
+
+  &:hover {
+    background: var(--color-bg-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--color-error);
+  line-height: 1.4;
+}
+
+// Botón de envío
+.submit-btn {
+  width: 100%;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  color: var(--color-text-inverse);
+  background: var(--color-primary);
+  cursor: pointer;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background var(--duration-fast) var(--easing-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &--loading {
+    background: var(--color-primary-dark);
+    cursor: progress;
+  }
+
+  &--inactive {
+    background: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+// Spinner de carga dentro del botón
+@keyframes docurural-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  animation: docurural-spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+// Pie de tarjeta
+.card__footer {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-divider);
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
