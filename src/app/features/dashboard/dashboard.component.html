@@ -24,28 +24,28 @@
       <div class="sb-nav__section">Principal</div>
       <a class="sb-nav__item" routerLink="/dashboard" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
         <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
+        <span class="sb-nav__label">Dashboard</span>
       </a>
       <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
         <mat-icon>description</mat-icon>
-        <span>Documentos</span>
+        <span class="sb-nav__label">Documentos</span>
         <span class="sb-badge">Sprint 2</span>
       </button>
       <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
         <mat-icon>search</mat-icon>
-        <span>Buscar</span>
+        <span class="sb-nav__label">Buscar</span>
       </button>
 
       @if (isAdmin()) {
         <div class="sb-nav__section sb-nav__section--admin">Administración</div>
-        <a class="sb-nav__item" routerLink="/users" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
+        <button class="sb-nav__item" routerLink="/users" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
           <mat-icon>group</mat-icon>
-          <span>Usuarios</span>
+          <span class="sb-nav__label">Usuarios</span>
           <span class="sb-admin-badge">ADMIN</span>
-        </a>
+        </button>
         <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
           <mat-icon>sell</mat-icon>
-          <span>Categorías</span>
+          <span class="sb-nav__label">Categorías</span>
           <span class="sb-admin-badge">ADMIN</span>
         </button>
       }
