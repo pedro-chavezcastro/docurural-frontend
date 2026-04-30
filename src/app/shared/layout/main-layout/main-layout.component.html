@@ -38,11 +38,11 @@
 
       @if (isAdmin()) {
         <div class="sb-nav__section sb-nav__section--admin">Administración</div>
-        <a class="sb-nav__item" routerLink="/users" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
+        <button class="sb-nav__item" routerLink="/users" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
           <mat-icon>group</mat-icon>
           <span class="sb-nav__label">Usuarios</span>
           <span class="sb-admin-badge">ADMIN</span>
-        </a>
+        </button>
         <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
           <mat-icon>sell</mat-icon>
           <span class="sb-nav__label">Categorías</span>

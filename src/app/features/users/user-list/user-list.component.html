@@ -1,0 +1,231 @@
+<!-- Cabecera de página -->
+<div class="page-header">
+  <div>
+    <p class="page-header__kicker">Administración</p>
+    <h1 class="page-header__title">Usuarios</h1>
+    <p class="page-header__subtitle">Gestione las cuentas del personal de la institución.</p>
+  </div>
+  <button class="btn-primary btn-primary--header" type="button" (click)="goToCreate()">
+    <mat-icon>add</mat-icon>
+    <span>Nuevo usuario</span>
+  </button>
+</div>
+
+<!-- Action bar -->
+<div class="action-bar" [class.action-bar--disabled]="!loading() && totalUsers() === 0">
+  <div class="search">
+    <mat-icon class="search__icon" aria-hidden="true">search</mat-icon>
+    <input
+      type="text"
+      class="search__input"
+      placeholder="Buscar por nombre o correo..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+      [disabled]="!loading() && totalUsers() === 0"
+      aria-label="Buscar usuarios"
+    />
+  </div>
+
+  <mat-form-field appearance="outline" class="sort-field" subscriptSizing="dynamic">
+    <mat-icon matIconPrefix>swap_vert</mat-icon>
+    <mat-label>Ordenar</mat-label>
+    <mat-select
+      [value]="selectedSort()"
+      (selectionChange)="onSortChange($event.value)"
+      [disabled]="!loading() && totalUsers() === 0"
+    >
+      @for (opt of sortOptions; track opt.value) {
+        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- Contador -->
+<div class="counter">
+  <mat-icon aria-hidden="true">group</mat-icon>
+  <span>
+    <strong>{{ totalUsers() }} {{ totalUsers() === 1 ? 'usuario' : 'usuarios' }}</strong>
+    {{ totalUsers() === 1 ? 'registrado' : 'registrados' }}
+  </span>
+</div>
+
+@if (loading()) {
+  <div class="state-card">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p class="state-card__text">Cargando usuarios…</p>
+  </div>
+} @else if (totalUsers() === 0) {
+  <!-- Estado vacío (sin usuarios en el sistema) -->
+  <div class="empty-card">
+    <div class="empty-card__icon" aria-hidden="true">
+      <mat-icon>group</mat-icon>
+    </div>
+    <h2 class="empty-card__title">No hay usuarios registrados en el sistema</h2>
+    <p class="empty-card__text">
+      Cree el primer usuario para que el personal de la institución pueda acceder a DocuRural.
+    </p>
+    <button class="btn-primary" type="button" (click)="goToCreate()">
+      <mat-icon>add</mat-icon>
+      <span>Nuevo usuario</span>
+    </button>
+  </div>
+} @else if (filteredUsers().length === 0) {
+  <!-- Búsqueda sin resultados -->
+  <div class="state-card">
+    <mat-icon class="state-card__icon" aria-hidden="true">search_off</mat-icon>
+    <p class="state-card__text">No se encontraron usuarios que coincidan con la búsqueda.</p>
+  </div>
+} @else {
+  <!-- Tabla (≥ 768px) -->
+  <div class="users-table desktop-only">
+    <table>
+      <colgroup>
+        <col class="col-user" />
+        <col class="col-role" />
+        <col class="col-status" />
+        <col class="col-created" />
+        <col class="col-last" />
+        <col class="col-actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha de creación</th>
+          <th>Último acceso</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of filteredUsers(); track trackById($index, user)) {
+          <tr [class.row--muted]="isMuted(user)">
+            <td>
+              <div class="user-cell">
+                <div class="avatar" [style]="avatarStyle(user.fullName, isMuted(user))" aria-hidden="true">
+                  {{ initials(user.fullName) }}
+                </div>
+                <div class="user-cell__text">
+                  <div class="user-cell__name">{{ user.fullName }}</div>
+                  <div class="user-cell__email">{{ user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge-wrap">
+                <app-role-badge [role]="user.role" />
+              </span>
+            </td>
+            <td>
+              <app-status-badge [status]="user.status" />
+            </td>
+            <td class="cell-date">{{ formatCreated(user.createdAt) }}</td>
+            <td class="cell-date">
+              @if (user.lastLogin) {
+                {{ formatLastLogin(user.lastLogin) }}
+              } @else {
+                <span class="cell-never">Nunca</span>
+              }
+            </td>
+            <td class="cell-actions">
+              <div class="actions">
+                <button
+                  type="button"
+                  class="icon-btn"
+                  matTooltip="Editar"
+                  aria-label="Editar usuario"
+                  (click)="goToEdit(user.id)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                @if (user.status === 'ACTIVE') {
+                  <button
+                    type="button"
+                    class="icon-btn icon-btn--danger"
+                    matTooltip="Desactivar"
+                    aria-label="Desactivar usuario"
+                    [disabled]="togglingId() === user.id"
+                    (click)="onToggleStatus(user)"
+                  >
+                    <mat-icon>lock</mat-icon>
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    matTooltip="Activar"
+                    aria-label="Activar usuario"
+                    [disabled]="togglingId() === user.id"
+                    (click)="onToggleStatus(user)"
+                  >
+                    <mat-icon>lock_open</mat-icon>
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tarjetas (< 768px) -->
+  <div class="user-cards mobile-only">
+    @for (user of filteredUsers(); track trackById($index, user)) {
+      <div class="user-card" [class.user-card--muted]="isMuted(user)">
+        <div class="user-card__top">
+          <div class="avatar avatar--lg" [style]="avatarStyle(user.fullName, isMuted(user))" aria-hidden="true">
+            {{ initials(user.fullName) }}
+          </div>
+          <div class="user-card__text">
+            <div class="user-card__name">{{ user.fullName }}</div>
+            <div class="user-card__email">{{ user.email }}</div>
+          </div>
+        </div>
+        <div class="user-card__bottom">
+          <div class="user-card__badges">
+            <span class="badge-wrap">
+              <app-role-badge [role]="user.role" />
+            </span>
+            <app-status-badge [status]="user.status" />
+          </div>
+          <div class="actions">
+            <button
+              type="button"
+              class="icon-btn"
+              matTooltip="Editar"
+              aria-label="Editar usuario"
+              (click)="goToEdit(user.id)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            @if (user.status === 'ACTIVE') {
+              <button
+                type="button"
+                class="icon-btn icon-btn--danger"
+                matTooltip="Desactivar"
+                aria-label="Desactivar usuario"
+                [disabled]="togglingId() === user.id"
+                (click)="onToggleStatus(user)"
+              >
+                <mat-icon>lock</mat-icon>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="icon-btn"
+                matTooltip="Activar"
+                aria-label="Activar usuario"
+                [disabled]="togglingId() === user.id"
+                (click)="onToggleStatus(user)"
+              >
+                <mat-icon>lock_open</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
