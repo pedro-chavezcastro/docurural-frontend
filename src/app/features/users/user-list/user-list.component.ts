@@ -3,8 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -45,8 +44,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
   imports: [
     FormsModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatSelectModule,
+    MatMenuModule,
     MatDialogModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
@@ -71,6 +69,10 @@ export class UserListComponent {
   protected readonly selectedSort = signal<SortOption>('fullNameAsc');
 
   protected readonly sortOptions = SORT_OPTIONS;
+
+  protected readonly currentSortLabel = computed(
+    () => this.currentSortConfig().label,
+  );
 
   protected readonly filteredUsers = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();

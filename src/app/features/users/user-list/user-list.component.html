@@ -26,19 +26,33 @@
     />
   </div>
 
-  <mat-form-field appearance="outline" class="sort-field" subscriptSizing="dynamic">
-    <mat-icon matIconPrefix>swap_vert</mat-icon>
-    <mat-label>Ordenar</mat-label>
-    <mat-select
-      [value]="selectedSort()"
-      (selectionChange)="onSortChange($event.value)"
-      [disabled]="!loading() && totalUsers() === 0"
-    >
-      @for (opt of sortOptions; track opt.value) {
-        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <button
+    type="button"
+    class="sort-trigger"
+    [matMenuTriggerFor]="sortMenu"
+    [disabled]="!loading() && totalUsers() === 0"
+    aria-label="Ordenar listado"
+  >
+    <mat-icon class="sort-trigger__icon" aria-hidden="true">swap_vert</mat-icon>
+    <span class="sort-trigger__label">
+      <span class="sort-trigger__prefix">Ordenar:</span>
+      {{ currentSortLabel() }}
+    </span>
+    <mat-icon class="sort-trigger__chevron" aria-hidden="true">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #sortMenu="matMenu" class="sort-menu" xPosition="before">
+    @for (opt of sortOptions; track opt.value) {
+      <button
+        type="button"
+        mat-menu-item
+        [class.sort-menu__item--active]="selectedSort() === opt.value"
+        (click)="onSortChange(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </mat-menu>
 </div>
 
 <!-- Contador -->
