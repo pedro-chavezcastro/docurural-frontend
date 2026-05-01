@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -14,6 +13,8 @@ import { User } from '../../../core/models/user.model';
 import { ApiError } from '../../../core/models/api-error.model';
 import { SortBy, SortDir } from '../../../core/models/user-list.models';
 import { UserStatus } from '../../../core/models/user-status.model';
+import { UserFormDialogComponent } from '../user-form-dialog/user-form-dialog.component';
+import { UserFormDialogData, UserFormDialogResult } from '../../../core/models/user-form.models';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
@@ -59,7 +60,6 @@ export class UserListComponent {
   private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
-  private readonly router = inject(Router);
 
   protected readonly loading = signal(false);
   protected readonly togglingId = signal<number | null>(null);
@@ -166,11 +166,23 @@ export class UserListComponent {
   }
 
   protected goToCreate(): void {
-    this.router.navigate(['/users/new']);
+    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData, UserFormDialogResult>(
+      UserFormDialogComponent,
+      { data: { mode: 'create' }, width: '480px', autoFocus: 'first-tabbable' },
+    );
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'created') this.loadUsers();
+    });
   }
 
-  protected goToEdit(id: number): void {
-    this.router.navigate(['/users', id, 'edit']);
+  protected goToEdit(user: User): void {
+    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData, UserFormDialogResult>(
+      UserFormDialogComponent,
+      { data: { mode: 'edit', user }, width: '480px', autoFocus: 'first-tabbable' },
+    );
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'updated') this.loadUsers();
+    });
   }
 
   protected initials(name: string): string {
