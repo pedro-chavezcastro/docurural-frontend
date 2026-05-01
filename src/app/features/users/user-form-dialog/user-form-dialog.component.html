@@ -31,6 +31,7 @@
     <!-- Nombre completo -->
     <div class="field">
       <label class="field__label" for="fullName">Nombre completo</label>
+      <strong class="field__required" aria-hidden="true">*</strong>
       <div
         class="field__control"
         [class.field__control--error]="form.controls.fullName.invalid && form.controls.fullName.touched"
@@ -60,6 +61,7 @@
     <!-- Correo electrónico -->
     <div class="field">
       <label class="field__label" for="email">Correo electrónico</label>
+      <strong class="field__required" aria-hidden="true">*</strong>
       <div
         class="field__control"
         [class.field__control--error]="form.controls.email.invalid && form.controls.email.touched"
@@ -89,6 +91,7 @@
     <!-- Rol -->
     <div class="field">
       <label class="field__label" for="role">Rol</label>
+      <strong class="field__required" aria-hidden="true">*</strong>
       <div
         class="field__control"
         [class.field__control--error]="form.controls.role.invalid && form.controls.role.touched"
@@ -128,6 +131,7 @@
           <span class="field__optional">(opcional)</span>
         }
       </label>
+      <strong class="field__required" aria-hidden="true">*</strong>
       <div
         class="field__control"
         [class.field__control--error]="form.controls.password.invalid && form.controls.password.touched"
@@ -180,6 +184,7 @@
     <!-- Confirmar contraseña -->
     <div class="field">
       <label class="field__label" for="confirmPassword">Confirmar contraseña</label>
+      <strong class="field__required" aria-hidden="true">*</strong>
       <div
         class="field__control"
         [class.field__control--error]="(form.controls.confirmPassword.invalid || form.hasError('passwordMismatch')) && form.controls.confirmPassword.touched"
