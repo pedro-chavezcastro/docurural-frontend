@@ -9,6 +9,12 @@ import {
   UpdateUserStatusResponse,
   UserListResponse,
 } from '../models/user-list.models';
+import {
+  CreateUserRequest,
+  CreateUserResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from '../models/user-form.models';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
@@ -26,5 +32,13 @@ export class UsersService {
       `${environment.apiBaseUrl}/users/${id}/status`,
       { status },
     );
+  }
+
+  create(req: CreateUserRequest): Observable<CreateUserResponse> {
+    return this.http.post<CreateUserResponse>(`${environment.apiBaseUrl}/users`, req);
+  }
+
+  update(id: number, req: UpdateUserRequest): Observable<UpdateUserResponse> {
+    return this.http.put<UpdateUserResponse>(`${environment.apiBaseUrl}/users/${id}`, req);
   }
 }
