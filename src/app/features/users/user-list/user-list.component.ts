@@ -7,18 +7,17 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { UsersService } from '../../../core/services/users.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { User } from '../../../core/models/user.model';
 import { ApiError } from '../../../core/models/api-error.model';
 import { SortBy, SortDir } from '../../../core/models/user-list.models';
-import { UserStatus } from '../../../core/models/user-status.model';
 import { UserFormDialogComponent } from '../user-form-dialog/user-form-dialog.component';
 import { UserFormDialogData, UserFormDialogResult } from '../../../core/models/user-form.models';
+import { ToggleStatusDialogComponent } from '../toggle-status-dialog/toggle-status-dialog.component';
 import {
-  ConfirmDialogComponent,
-  ConfirmDialogData,
-} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+  ToggleStatusDialogData,
+  ToggleStatusDialogResult,
+} from '../../../core/models/toggle-status-dialog.models';
 import { RoleBadgeComponent } from './components/role-badge.component';
 import { StatusBadgeComponent } from './components/status-badge.component';
 import { avatarColor, avatarInitials } from './utils/avatar-color';
@@ -57,12 +56,10 @@ const SORT_OPTIONS: SortOptionConfig[] = [
 })
 export class UserListComponent {
   private readonly usersService = inject(UsersService);
-  private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
 
   protected readonly loading = signal(false);
-  protected readonly togglingId = signal<number | null>(null);
   protected readonly users = signal<User[]>([]);
   protected readonly totalUsers = signal(0);
   protected readonly searchTerm = signal('');
@@ -128,40 +125,23 @@ export class UserListComponent {
   }
 
   protected onToggleStatus(user: User): void {
-    const currentUserId = this.auth.currentUser()?.id;
-    const willDeactivate = user.status === 'ACTIVE';
+    const action = user.status === 'ACTIVE' ? 'deactivate' : 'activate';
 
-    if (willDeactivate && currentUserId === user.id) {
-      this.notifications.error('No puede desactivar su propia cuenta');
-      return;
-    }
+    const ref = this.dialog.open<
+      ToggleStatusDialogComponent,
+      ToggleStatusDialogData,
+      ToggleStatusDialogResult
+    >(ToggleStatusDialogComponent, {
+      data: { user, action },
+      width: '400px',
+      maxWidth: '90vw',
+      autoFocus: 'first-tabbable',
+    });
 
-    const dialogData: ConfirmDialogData = willDeactivate
-      ? {
-          title: 'Desactivar cuenta',
-          message: `¿Está seguro de desactivar la cuenta de ${user.fullName}? El usuario no podrá acceder al sistema.`,
-          confirmLabel: 'Desactivar',
-          cancelLabel: 'Cancelar',
-          tone: 'danger',
-          icon: 'lock',
-        }
-      : {
-          title: 'Reactivar cuenta',
-          message: `¿Reactivar la cuenta de ${user.fullName}? El usuario podrá volver a iniciar sesión.`,
-          confirmLabel: 'Activar',
-          cancelLabel: 'Cancelar',
-          tone: 'primary',
-          icon: 'lock_open',
-        };
-
-    const ref = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-      ConfirmDialogComponent,
-      { data: dialogData, width: '440px', autoFocus: 'first-tabbable' },
-    );
-
-    ref.afterClosed().subscribe((confirmed) => {
-      if (!confirmed) return;
-      this.applyStatusChange(user, willDeactivate ? 'INACTIVE' : 'ACTIVE');
+    ref.afterClosed().subscribe((result) => {
+      if (!result?.success) return;
+      this.notifications.success(result.message);
+      this.loadUsers();
     });
   }
 
@@ -215,31 +195,6 @@ export class UserListComponent {
 
   private currentSortConfig(): SortOptionConfig {
     return SORT_OPTIONS.find((o) => o.value === this.selectedSort()) ?? SORT_OPTIONS[0];
-  }
-
-  private applyStatusChange(user: User, newStatus: UserStatus): void {
-    this.togglingId.set(user.id);
-    this.usersService.updateStatus(user.id, newStatus).subscribe({
-      next: (res) => {
-        this.togglingId.set(null);
-        this.notifications.success(
-          res.message ??
-            (newStatus === 'ACTIVE'
-              ? 'Usuario reactivado exitosamente'
-              : 'Usuario desactivado exitosamente'),
-        );
-        this.loadUsers();
-      },
-      error: (err: HttpErrorResponse) => {
-        this.togglingId.set(null);
-        const apiError = err.error as ApiError | undefined;
-        const fallback =
-          newStatus === 'ACTIVE'
-            ? 'No se pudo reactivar el usuario'
-            : 'No se pudo desactivar el usuario';
-        this.notifications.error(apiError?.message ?? fallback);
-      },
-    });
   }
 
   private parseIso(value: string): Date | null {

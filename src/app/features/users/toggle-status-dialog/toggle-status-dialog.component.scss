@@ -1,0 +1,192 @@
+.dialog {
+  box-sizing: border-box;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+.dialog__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px 20px;
+  gap: 16px;
+}
+
+.dialog__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--deactivate {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning-border);
+  }
+
+  &--activate {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    border: 1px solid rgba(58, 138, 63, 0.25);
+  }
+}
+
+.dialog__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+  line-height: 1.3;
+}
+
+// ─── Banner de error ─────────────────────────────────────────────────────────
+.dialog__banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  margin: 0 24px 4px;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  line-height: 1.45;
+
+  &--error {
+    background: var(--color-error-light);
+    border: 1px solid var(--color-error-border);
+    color: var(--color-error-text);
+  }
+}
+
+// ─── Cuerpo ──────────────────────────────────────────────────────────────────
+.dialog__body {
+  padding: 4px 24px 16px;
+}
+
+.dialog__message {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.dialog__hint {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px 20px;
+  border-top: 1px solid var(--color-divider);
+}
+
+// ─── Botones ─────────────────────────────────────────────────────────────────
+.btn {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background var(--duration-fast) var(--easing-standard),
+              border-color var(--duration-fast) var(--easing-standard);
+
+  &--secondary {
+    border: 1px solid var(--color-border);
+    background: #fff;
+    color: var(--color-text-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &--action {
+    border: none;
+    color: var(--color-text-inverse);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &--action-deactivate {
+    background: var(--color-error);
+
+    &:hover:not(:disabled) {
+      background: var(--color-error-text);
+    }
+  }
+
+  &--action-activate {
+    background: var(--color-success);
+
+    &:hover:not(:disabled) {
+      background: #2D6E31;
+    }
+  }
+}
+
+@keyframes docurural-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  animation: docurural-spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+// ─── Responsive (mobile) ─────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .dialog__header {
+    padding: 24px 16px 16px;
+  }
+
+  .dialog__banner {
+    margin: 0 16px 4px;
+  }
+
+  .dialog__body {
+    padding: 4px 16px 12px;
+  }
+
+  .dialog__footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 12px 16px 16px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

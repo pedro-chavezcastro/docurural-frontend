@@ -159,7 +159,6 @@
                     class="icon-btn icon-btn--danger"
                     matTooltip="Desactivar"
                     aria-label="Desactivar usuario"
-                    [disabled]="togglingId() === user.id"
                     (click)="onToggleStatus(user)"
                   >
                     <mat-icon>lock</mat-icon>
@@ -170,7 +169,6 @@
                     class="icon-btn"
                     matTooltip="Activar"
                     aria-label="Activar usuario"
-                    [disabled]="togglingId() === user.id"
                     (click)="onToggleStatus(user)"
                   >
                     <mat-icon>lock_open</mat-icon>
@@ -220,7 +218,6 @@
                 class="icon-btn icon-btn--danger"
                 matTooltip="Desactivar"
                 aria-label="Desactivar usuario"
-                [disabled]="togglingId() === user.id"
                 (click)="onToggleStatus(user)"
               >
                 <mat-icon>lock</mat-icon>
@@ -231,7 +228,6 @@
                 class="icon-btn"
                 matTooltip="Activar"
                 aria-label="Activar usuario"
-                [disabled]="togglingId() === user.id"
                 (click)="onToggleStatus(user)"
               >
                 <mat-icon>lock_open</mat-icon>
