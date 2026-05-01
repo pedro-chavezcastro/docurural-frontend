@@ -168,7 +168,7 @@ export class UserListComponent {
   protected goToCreate(): void {
     const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData, UserFormDialogResult>(
       UserFormDialogComponent,
-      { data: { mode: 'create' }, width: '480px', autoFocus: 'first-tabbable' },
+      { data: { mode: 'create' }, width: '480px', maxWidth: '95vw', autoFocus: 'first-tabbable' },
     );
     ref.afterClosed().subscribe((result) => {
       if (result?.kind === 'created') this.loadUsers();
@@ -178,7 +178,7 @@ export class UserListComponent {
   protected goToEdit(user: User): void {
     const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData, UserFormDialogResult>(
       UserFormDialogComponent,
-      { data: { mode: 'edit', user }, width: '480px', autoFocus: 'first-tabbable' },
+      { data: { mode: 'edit', user }, width: '480px', maxWidth: '95vw', autoFocus: 'first-tabbable' },
     );
     ref.afterClosed().subscribe((result) => {
       if (result?.kind === 'updated') this.loadUsers();

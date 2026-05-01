@@ -53,7 +53,7 @@
   gap: 10px;
   padding: 10px 14px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.45;
   margin-bottom: 18px;
 
@@ -75,7 +75,7 @@
 
 .field__label {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--color-text-primary);
   margin-bottom: 6px;
@@ -83,7 +83,7 @@
 
 .field__optional {
   font-weight: 400;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--color-text-secondary);
   margin-left: 4px;
 }
@@ -206,7 +206,7 @@
 .field__hint {
   display: block;
   margin: 6px 0 0;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--color-text-secondary);
   line-height: 1.4;
 }
@@ -216,7 +216,7 @@
   align-items: center;
   gap: 6px;
   margin: 6px 0 0;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-error);
   line-height: 1.4;
 }

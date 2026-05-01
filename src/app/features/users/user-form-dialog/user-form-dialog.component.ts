@@ -148,6 +148,7 @@ export class UserFormDialogComponent implements OnInit {
     this.loading.set(true);
     this.submitError.set(null);
     this.form.disable();
+    this.dialogRef.disableClose = true;
 
     if (this.isEdit() && this.data.user) {
       const raw = this.form.getRawValue();
@@ -167,6 +168,7 @@ export class UserFormDialogComponent implements OnInit {
           finalize(() => {
             this.loading.set(false);
             this.form.enable();
+            this.dialogRef.disableClose = false;
             if (this.isSelfEdit()) this.form.controls.role.disable();
           }),
         )
@@ -193,6 +195,7 @@ export class UserFormDialogComponent implements OnInit {
           finalize(() => {
             this.loading.set(false);
             this.form.enable();
+            this.dialogRef.disableClose = false;
           }),
         )
         .subscribe({
