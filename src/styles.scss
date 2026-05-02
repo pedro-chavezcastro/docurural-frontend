@@ -84,3 +84,29 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+// ─── Toast personalizado (NotificationService) ──────────────────────────────
+.mat-mdc-snack-bar-container.docu-toast-panel {
+  --mdc-snackbar-container-color: transparent;
+  --mat-snack-bar-button-color: transparent;
+  --mdc-snackbar-supporting-text-color: inherit;
+
+  margin: 16px;
+
+  .mdc-snackbar__surface {
+    background: transparent;
+    box-shadow: var(--shadow-card);
+    padding: 0;
+    min-width: 0;
+  }
+
+  .mdc-snackbar__label {
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .mat-mdc-snack-bar-container.docu-toast-panel {
+    margin: 12px;
+  }
+}

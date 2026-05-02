@@ -58,7 +58,8 @@ export class AuthService {
   forceLogout(reason: 'expired' | 'silent'): void {
     if (reason === 'expired') {
       this.notifications.error(
-        'Su sesión ha expirado por inactividad. Por favor, inicie sesión nuevamente',
+        'Sesión expirada',
+        'Por inactividad. Por favor, inicie sesión nuevamente.',
       );
     }
     const returnUrl = this.router.url;

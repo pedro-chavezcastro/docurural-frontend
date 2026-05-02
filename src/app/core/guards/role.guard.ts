@@ -12,7 +12,10 @@ export function roleGuard(allowed: Role[]): CanActivateFn {
 
     if (allowed.includes(auth.currentUser()?.role as Role)) return true;
 
-    notifications.error('No tiene permisos para realizar esta acción');
+    notifications.error(
+      'Acceso denegado',
+      'No tiene permisos para realizar esta acción.',
+    );
     return router.parseUrl('/dashboard');
   };
 }

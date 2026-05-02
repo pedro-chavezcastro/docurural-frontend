@@ -113,7 +113,8 @@ export class UserListComponent {
         this.loading.set(false);
         const apiError = err.error as ApiError | undefined;
         this.notifications.error(
-          apiError?.message ?? 'No se pudo cargar el listado de usuarios',
+          'No se pudo cargar el listado',
+          apiError?.message ?? 'Verifique su conexión e intente nuevamente.',
         );
       },
     });
@@ -140,7 +141,7 @@ export class UserListComponent {
 
     ref.afterClosed().subscribe((result) => {
       if (!result?.success) return;
-      this.notifications.success(result.message);
+      this.notifications.success('Estado actualizado', result.message);
       this.loadUsers();
     });
   }

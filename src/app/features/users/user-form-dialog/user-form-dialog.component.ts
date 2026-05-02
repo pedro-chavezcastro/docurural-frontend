@@ -174,7 +174,10 @@ export class UserFormDialogComponent implements OnInit {
         )
         .subscribe({
           next: (res) => {
-            this.notifications.success('Usuario actualizado exitosamente');
+            this.notifications.success(
+              'Usuario actualizado',
+              'Los cambios se guardaron correctamente.',
+            );
             this.dialogRef.close({ kind: 'updated', user: res });
           },
           error: (err: HttpErrorResponse) => this.handleError(err),
@@ -200,7 +203,10 @@ export class UserFormDialogComponent implements OnInit {
         )
         .subscribe({
           next: (res) => {
-            this.notifications.success('Usuario creado exitosamente');
+            this.notifications.success(
+              'Usuario creado',
+              'Ya puede iniciar sesión con sus credenciales.',
+            );
             this.dialogRef.close({ kind: 'created', user: res });
           },
           error: (err: HttpErrorResponse) => this.handleError(err),
