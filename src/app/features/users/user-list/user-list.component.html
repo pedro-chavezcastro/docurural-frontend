@@ -128,7 +128,7 @@
                   <mat-icon>edit</mat-icon>
                 </app-icon-button>
                 @if (user.status === 'ACTIVE') {
-                  <app-icon-button variant="danger" tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
+                  <app-icon-button tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
                     <mat-icon>lock</mat-icon>
                   </app-icon-button>
                 } @else {
