@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { UsersService } from '../../../core/services/users.service';
 import { ApiError } from '../../../core/models/api-error.model';
 import { UserStatus } from '../../../core/models/user-status.model';
@@ -15,7 +15,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
   selector: 'app-toggle-status-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AlertComponent, ButtonComponent],
+  imports: [MatDialogModule, AlertComponent, ButtonComponent],
   templateUrl: './toggle-status-dialog.component.html',
   styleUrl: './toggle-status-dialog.component.scss',
 })

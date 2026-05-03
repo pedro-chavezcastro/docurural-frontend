@@ -1,3 +1,11 @@
+// Ajusta los tokens de Material Dialog para este diálogo.
+// Evita !important sobreescribiendo los CSS custom properties antes de que
+// Angular Material los aplique en el árbol de render.
+:host {
+  --mat-dialog-with-actions-content-padding: 12px 24px 8px;
+  --mat-dialog-actions-padding: 8px 24px 16px;
+}
+
 .dialog {
   padding: 8px;
   min-width: 320px;
@@ -7,8 +15,8 @@
 .dialog__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 24px 0;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6) 0;
 }
 
 .dialog__icon-wrap {
@@ -36,35 +44,26 @@
 
 .dialog__title {
   font-family: var(--font-sans);
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
   padding: 0;
 }
 
-.dialog__body {
-  padding: 12px 24px 8px !important;
-}
-
 .dialog__message {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: var(--text-base);
   color: var(--color-text-secondary);
   line-height: 1.5;
   margin: 0;
 }
 
-.dialog__actions {
-  padding: 8px 24px 16px !important;
-  gap: 8px;
-}
-
+// Botón de confirmación con tono danger.
+// Usa los tokens de MDC/Material en lugar de !important para sobrescribir
+// los valores que el tema global establece sobre mat-flat-button.
 .dialog__btn--danger {
-  background-color: var(--color-error) !important;
-  color: var(--color-text-inverse) !important;
-
-  &:hover {
-    background-color: var(--color-error-text) !important;
-  }
+  --mdc-filled-button-container-color: var(--color-error);
+  --mdc-filled-button-label-text-color: var(--color-text-inverse);
+  --mat-filled-button-state-layer-color: rgba(0, 0, 0, 0.15);
 }

@@ -36,7 +36,7 @@
     <mat-icon class="sort-trigger__chevron" aria-hidden="true">expand_more</mat-icon>
   </button>
 
-  <mat-menu #sortMenu="matMenu" class="sort-menu" xPosition="before">
+  <mat-menu #sortMenu="matMenu" panelClass="sort-menu" xPosition="before">
     @for (opt of sortOptions; track opt.value) {
       <button
         type="button"

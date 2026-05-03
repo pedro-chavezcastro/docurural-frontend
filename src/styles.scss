@@ -74,3 +74,12 @@ body {
     margin: var(--space-3);
   }
 }
+
+// ─── Menú de ordenamiento (panelClass="sort-menu") ──────────────────────────
+// La regla vive aquí porque mat-menu renderiza el panel en un overlay fuera
+// del árbol de componentes; usar panelClass es el patrón recomendado sobre ::ng-deep.
+.sort-menu .sort-menu__item--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background: var(--color-primary-light);
+}
