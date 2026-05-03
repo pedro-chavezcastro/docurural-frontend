@@ -1,0 +1,138 @@
+:host {
+  display: contents;
+}
+
+.btn {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  // --btn-width can be set on the <app-button> host element to override width
+  // (CSS custom properties pierce Angular's emulated encapsulation via inheritance).
+  width: var(--btn-width, auto);
+  transition: background var(--duration-fast) var(--easing-standard),
+              border-color var(--duration-fast) var(--easing-standard),
+              color var(--duration-fast) var(--easing-standard);
+
+  &--full {
+    width: 100%;
+  }
+
+  // ── Primary ──────────────────────────────────────────────────────
+  &--primary {
+    border: none;
+    color: var(--color-text-inverse);
+    background: var(--color-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Secondary ─────────────────────────────────────────────────────
+  &--secondary {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Danger ────────────────────────────────────────────────────────
+  &--danger {
+    border: none;
+    color: var(--color-text-inverse);
+    background: var(--color-error);
+
+    &:hover:not(:disabled) {
+      background: var(--color-error-text);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Success ───────────────────────────────────────────────────────
+  &--success {
+    border: none;
+    color: var(--color-text-inverse);
+    background: var(--color-success);
+
+    &:hover:not(:disabled) {
+      background: #2D6E31;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Loading state ─────────────────────────────────────────────────
+  &--loading {
+    cursor: progress;
+
+    &.btn--primary  { background: var(--color-primary-dark); }
+    &.btn--danger   { background: var(--color-error-text); }
+    &.btn--success  { background: #2D6E31; }
+  }
+}
+
+// Make mat-progress-spinner white inside any button
+.btn__spinner {
+  --mdc-circular-progress-active-indicator-color: rgba(255, 255, 255, 0.9);
+
+  circle {
+    stroke: rgba(255, 255, 255, 0.35);
+  }
+}
+
+// Secondary spinner uses a dark color
+.btn--secondary .btn__spinner {
+  --mdc-circular-progress-active-indicator-color: var(--color-primary);
+
+  circle {
+    stroke: var(--color-border);
+  }
+}

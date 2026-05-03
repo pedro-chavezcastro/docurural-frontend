@@ -4,7 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { UsersService } from '../../../core/services/users.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -21,6 +20,9 @@ import {
 import { RoleBadgeComponent } from './components/role-badge.component';
 import { StatusBadgeComponent } from './components/status-badge.component';
 import { avatarColor, avatarInitials } from './utils/avatar-color';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { IconButtonComponent } from '../../../shared/components/icon-button/icon-button.component';
 
 type SortOption = 'fullNameAsc' | 'fullNameDesc' | 'createdAtDesc' | 'createdAtAsc';
 
@@ -46,10 +48,12 @@ const SORT_OPTIONS: SortOptionConfig[] = [
     MatIconModule,
     MatMenuModule,
     MatDialogModule,
-    MatProgressSpinnerModule,
     MatTooltipModule,
     RoleBadgeComponent,
     StatusBadgeComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    IconButtonComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',

@@ -8,12 +8,14 @@ import {
   ToggleStatusDialogData,
   ToggleStatusDialogResult,
 } from '../../../core/models/toggle-status-dialog.models';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-toggle-status-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [AlertComponent, ButtonComponent],
   templateUrl: './toggle-status-dialog.component.html',
   styleUrl: './toggle-status-dialog.component.scss',
 })

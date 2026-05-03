@@ -1,11 +1,5 @@
 <!-- Cabecera de página -->
-<div class="page-header">
-  <div>
-    <p class="page-header__date">{{ today }}</p>
-    <h1 class="page-header__title">Hola, {{ currentUser()?.fullName?.split(' ')?.[0] }}</h1>
-    <p class="page-header__subtitle">Bienvenido al sistema de gestión documental</p>
-  </div>
-</div>
+<app-page-header [kicker]="today" [title]="'Hola, ' + (currentUser()?.fullName?.split(' ')?.[0] ?? '')" subtitle="Bienvenido al sistema de gestión documental" />
 
 <!-- Tarjeta de bienvenida -->
 <div class="welcome-card">

@@ -1,19 +1,25 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Role, ROLE_LABELS } from '../../../../core/models/role.model';
+import { BadgeComponent, BadgeVariant } from '../../../../shared/components/badge/badge.component';
+
+const ROLE_VARIANT: Record<Role, BadgeVariant> = {
+  ADMIN:  'primary',
+  EDITOR: 'success',
+  READER: 'neutral',
+};
 
 @Component({
   selector: 'app-role-badge',
   standalone: true,
+  imports: [BadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span class="role-badge" [class]="'role-badge--' + role().toLowerCase()">
-      <span class="role-badge__dot" aria-hidden="true"></span>
-      {{ label() }}
-    </span>
+    <app-badge [variant]="variant()" [dot]="true">{{ label() }}</app-badge>
   `,
-  styleUrl: './role-badge.component.scss',
 })
 export class RoleBadgeComponent {
   readonly role = input.required<Role>();
-  protected readonly label = computed(() => ROLE_LABELS[this.role()]);
+
+  protected readonly label   = computed(() => ROLE_LABELS[this.role()]);
+  protected readonly variant = computed(() => ROLE_VARIANT[this.role()]);
 }

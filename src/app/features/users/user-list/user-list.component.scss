@@ -4,36 +4,6 @@
   color: var(--color-text-primary);
 }
 
-// ── Cabecera de página ─────────────────────────────────────────────
-.page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-}
-
-.page-header__kicker {
-  margin: 0 0 4px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.page-header__title {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-}
-
-.page-header__subtitle {
-  margin: 6px 0 0;
-  font-size: 15px;
-  color: var(--color-text-secondary);
-}
-
 // ── Botón primario ─────────────────────────────────────────────────
 .btn-primary {
   display: inline-flex;
@@ -352,56 +322,11 @@
   height: 40px;
 }
 
-// ── Botones de acción (icon-btn) ───────────────────────────────────
+// ── Botones de acción ─────────────────────────────────────────────
 .actions {
   display: inline-flex;
   gap: 6px;
   justify-content: center;
-}
-
-.icon-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md);
-  background: transparent;
-  border: 1px solid var(--color-divider);
-  color: var(--color-text-secondary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background var(--duration-fast), border-color var(--duration-fast), color var(--duration-fast);
-
-  mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-  }
-
-  &:hover:not(:disabled) {
-    background: var(--color-bg-hover);
-    color: var(--color-text-primary);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.icon-btn--danger {
-  color: var(--color-error-text);
-
-  &:hover:not(:disabled) {
-    background: var(--color-error-light);
-    border-color: var(--color-error-border);
-    color: var(--color-error-text);
-  }
 }
 
 // ── Tarjetas (móvil) ───────────────────────────────────────────────
@@ -481,80 +406,6 @@
   }
 }
 
-// ── Estado vacío del sistema (sin usuarios) ────────────────────────
-.empty-card {
-  background: #fff;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-divider);
-  padding: 48px 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-height: 380px;
-  justify-content: center;
-}
-
-.empty-card__icon {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-
-  mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-  }
-}
-
-.empty-card__title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  max-width: 480px;
-}
-
-.empty-card__text {
-  margin: 10px 0 24px;
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  line-height: 1.55;
-  max-width: 480px;
-}
-
-// ── Estado intermedio (cargando / sin resultados) ──────────────────
-.state-card {
-  background: #fff;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-divider);
-  padding: 48px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-}
-
-.state-card__icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  color: var(--color-text-muted);
-}
-
-.state-card__text {
-  margin: 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
 
 // ── Visibilidad responsive ─────────────────────────────────────────
 .desktop-only {
@@ -566,19 +417,6 @@
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    align-items: flex-start;
-    margin-bottom: 18px;
-  }
-
-  .page-header__title {
-    font-size: 24px;
-  }
-
-  .page-header__subtitle {
-    display: none;
-  }
-
   .btn-primary--header {
     width: 100%;
     padding: 14px 16px;
@@ -595,41 +433,11 @@
     max-width: none;
   }
 
-  .sort-field {
-    width: 100%;
-  }
-
   .desktop-only {
     display: none;
   }
 
   .mobile-only {
     display: flex;
-  }
-
-  .empty-card {
-    padding: 32px 20px;
-    min-height: 320px;
-  }
-
-  .empty-card__icon {
-    width: 80px;
-    height: 80px;
-
-    mat-icon {
-      font-size: 40px;
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  .empty-card__title {
-    font-size: 17px;
-    line-height: 1.35;
-  }
-
-  .empty-card__text {
-    font-size: 13px;
-    margin-bottom: 22px;
   }
 }

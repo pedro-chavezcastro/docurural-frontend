@@ -1,15 +1,10 @@
 <!-- Cabecera de página -->
-<div class="page-header">
-  <div>
-    <p class="page-header__kicker">Administración</p>
-    <h1 class="page-header__title">Usuarios</h1>
-    <p class="page-header__subtitle">Gestione las cuentas del personal de la institución.</p>
-  </div>
-  <button class="btn-primary btn-primary--header" type="button" (click)="goToCreate()">
+<app-page-header kicker="Administración" title="Usuarios" subtitle="Gestione las cuentas del personal de la institución.">
+  <button actions class="btn-primary btn-primary--header" type="button" (click)="goToCreate()">
     <mat-icon>add</mat-icon>
     <span>Nuevo usuario</span>
   </button>
-</div>
+</app-page-header>
 
 <!-- Action bar -->
 <div class="action-bar" [class.action-bar--disabled]="!loading() && totalUsers() === 0">
@@ -65,31 +60,16 @@
 </div>
 
 @if (loading()) {
-  <div class="state-card">
-    <mat-spinner diameter="48"></mat-spinner>
-    <p class="state-card__text">Cargando usuarios…</p>
-  </div>
+  <app-empty-state variant="loading">Cargando usuarios…</app-empty-state>
 } @else if (totalUsers() === 0) {
-  <!-- Estado vacío (sin usuarios en el sistema) -->
-  <div class="empty-card">
-    <div class="empty-card__icon" aria-hidden="true">
-      <mat-icon>group</mat-icon>
-    </div>
-    <h2 class="empty-card__title">No hay usuarios registrados en el sistema</h2>
-    <p class="empty-card__text">
-      Cree el primer usuario para que el personal de la institución pueda acceder a DocuRural.
-    </p>
-    <button class="btn-primary" type="button" (click)="goToCreate()">
+  <app-empty-state variant="empty" icon="group" title="No hay usuarios registrados en el sistema" description="Cree el primer usuario para que el personal de la institución pueda acceder a DocuRural.">
+    <button actions class="btn-primary" type="button" (click)="goToCreate()">
       <mat-icon>add</mat-icon>
       <span>Nuevo usuario</span>
     </button>
-  </div>
+  </app-empty-state>
 } @else if (filteredUsers().length === 0) {
-  <!-- Búsqueda sin resultados -->
-  <div class="state-card">
-    <mat-icon class="state-card__icon" aria-hidden="true">search_off</mat-icon>
-    <p class="state-card__text">No se encontraron usuarios que coincidan con la búsqueda.</p>
-  </div>
+  <app-empty-state variant="no-results" icon="search_off">No se encontraron usuarios que coincidan con la búsqueda.</app-empty-state>
 } @else {
   <!-- Tabla (≥ 768px) -->
   <div class="users-table desktop-only">
@@ -144,35 +124,17 @@
             </td>
             <td class="cell-actions">
               <div class="actions">
-                <button
-                  type="button"
-                  class="icon-btn"
-                  matTooltip="Editar"
-                  aria-label="Editar usuario"
-                  (click)="goToEdit(user)"
-                >
+                <app-icon-button tooltip="Editar" ariaLabel="Editar usuario" (click)="goToEdit(user)">
                   <mat-icon>edit</mat-icon>
-                </button>
+                </app-icon-button>
                 @if (user.status === 'ACTIVE') {
-                  <button
-                    type="button"
-                    class="icon-btn icon-btn--danger"
-                    matTooltip="Desactivar"
-                    aria-label="Desactivar usuario"
-                    (click)="onToggleStatus(user)"
-                  >
+                  <app-icon-button variant="danger" tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
                     <mat-icon>lock</mat-icon>
-                  </button>
+                  </app-icon-button>
                 } @else {
-                  <button
-                    type="button"
-                    class="icon-btn"
-                    matTooltip="Activar"
-                    aria-label="Activar usuario"
-                    (click)="onToggleStatus(user)"
-                  >
+                  <app-icon-button tooltip="Activar" ariaLabel="Activar usuario" (click)="onToggleStatus(user)">
                     <mat-icon>lock_open</mat-icon>
-                  </button>
+                  </app-icon-button>
                 }
               </div>
             </td>
@@ -203,35 +165,17 @@
             <app-status-badge [status]="user.status" />
           </div>
           <div class="actions">
-            <button
-              type="button"
-              class="icon-btn"
-              matTooltip="Editar"
-              aria-label="Editar usuario"
-              (click)="goToEdit(user)"
-            >
+            <app-icon-button tooltip="Editar" ariaLabel="Editar usuario" (click)="goToEdit(user)">
               <mat-icon>edit</mat-icon>
-            </button>
+            </app-icon-button>
             @if (user.status === 'ACTIVE') {
-              <button
-                type="button"
-                class="icon-btn icon-btn--danger"
-                matTooltip="Desactivar"
-                aria-label="Desactivar usuario"
-                (click)="onToggleStatus(user)"
-              >
+              <app-icon-button variant="danger" tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
                 <mat-icon>lock</mat-icon>
-              </button>
+              </app-icon-button>
             } @else {
-              <button
-                type="button"
-                class="icon-btn"
-                matTooltip="Activar"
-                aria-label="Activar usuario"
-                (click)="onToggleStatus(user)"
-              >
+              <app-icon-button tooltip="Activar" ariaLabel="Activar usuario" (click)="onToggleStatus(user)">
                 <mat-icon>lock_open</mat-icon>
-              </button>
+              </app-icon-button>
             }
           </div>
         </div>
