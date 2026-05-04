@@ -200,7 +200,7 @@
   gap: var(--space-3);
   padding: 10px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--sidebar-overlay-1);
 }
 
 .sb-user__avatar {
@@ -244,7 +244,7 @@
   width: 100%;
   padding: 10px var(--space-3);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--sidebar-overlay-3);
   background: transparent;
   color: #fff;
   font-family: inherit;

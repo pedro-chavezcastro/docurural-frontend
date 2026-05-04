@@ -8,17 +8,19 @@
 
 <!-- Action bar -->
 <div class="action-bar" [class.action-bar--disabled]="!loading() && totalUsers() === 0">
-  <div class="search">
-    <mat-icon class="search__icon" aria-hidden="true">search</mat-icon>
-    <input
-      type="text"
-      class="search__input"
-      placeholder="Buscar por nombre o correo..."
-      [ngModel]="searchTerm()"
-      (ngModelChange)="searchTerm.set($event)"
-      [disabled]="!loading() && totalUsers() === 0"
-      aria-label="Buscar usuarios"
-    />
+  <div class="field field--search">
+    <div class="field__control">
+      <mat-icon class="field__icon" aria-hidden="true">search</mat-icon>
+      <input
+        type="text"
+        class="field__input field__input--with-icon"
+        placeholder="Buscar por nombre o correo..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        [disabled]="!loading() && totalUsers() === 0"
+        aria-label="Buscar usuarios"
+      />
+    </div>
   </div>
 
   <button

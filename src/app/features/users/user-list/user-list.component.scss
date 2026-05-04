@@ -1,8 +1,14 @@
+@use '../../../../styles/form-field' as ff;
+
 :host {
   display: block;
   font-family: var(--font-sans);
   color: var(--color-text-primary);
 }
+
+// Habilita las clases .field/.field__control/.field__icon/.field__input
+// dentro del componente. Usado por el campo de búsqueda (.field--search).
+@include ff.styles();
 
 // ── Action bar ───────────────────────────────────────────────��─────
 .action-bar {
@@ -19,54 +25,17 @@
   }
 }
 
-// ── Campo de búsqueda (M20: alineado con _form-field.scss) ─────────
-// Usa los mismos tokens que el mixin de campo de formulario pero con
-// sizing compacto (text-md / padding 11px) propio de un control de filtro.
-.search {
-  position: relative;
+// Campo de búsqueda: variante compacta del .field shared para uso como filtro
+// (alto reducido y tipografía text-md). Hereda focus, disabled, ícono, etc.
+.field--search {
   flex: 1 1 280px;
   max-width: 480px;
   min-width: 0;
-}
+  margin-bottom: 0;
 
-.search__icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-secondary);
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
-}
-
-.search__input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px var(--space-4) 11px 44px;
-  font-family: var(--font-sans);
-  font-size: var(--text-md);
-  color: var(--color-text-primary);
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  outline: none;
-  transition: border-color var(--duration-fast) var(--easing-standard),
-              box-shadow var(--duration-fast) var(--easing-standard);
-
-  &::placeholder {
-    color: var(--color-text-muted);
-  }
-
-  &:focus {
-    border-color: var(--color-primary);
-    box-shadow: var(--focus-ring);
-  }
-
-  &:disabled {
-    background: var(--color-bg-app);
-    cursor: not-allowed;
+  .field__input {
+    padding: 11px var(--space-4) 11px 44px;
+    font-size: var(--text-md);
   }
 }
 
@@ -283,7 +252,7 @@
     gap: 10px;
   }
 
-  .search {
+  .field--search {
     flex: 1 1 100%;
     max-width: none;
   }
