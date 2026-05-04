@@ -4,44 +4,6 @@
   color: var(--color-text-primary);
 }
 
-// ── Botón primario del header ───────────────────────────────────────
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: 11px 18px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background var(--duration-fast) var(--easing-standard);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:hover:not(:disabled) {
-    background: var(--color-primary-dark);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
 // ── Action bar ───────────────────────────────────────────────��─────
 .action-bar {
   display: flex;
@@ -311,9 +273,8 @@
 .mobile-only  { display: none; }
 
 @media (max-width: 768px) {
-  .btn-primary--header {
-    width: 100%;
-    padding: 14px var(--space-4);
+  .header-action {
+    --btn-width: 100%;
   }
 
   .action-bar {
