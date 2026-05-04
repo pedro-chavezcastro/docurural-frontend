@@ -20,7 +20,6 @@ import { IconButtonComponent } from '../../../../shared/components/icon-button/i
 
       @if (user().status === 'ACTIVE') {
         <app-icon-button
-          variant="danger"
           tooltip="Desactivar"
           ariaLabel="Desactivar usuario"
           (click)="toggleStatus.emit(user())"
