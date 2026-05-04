@@ -1,0 +1,9 @@
+:host {
+  display: inline-flex;
+}
+
+.row-actions {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-items: center;
+}

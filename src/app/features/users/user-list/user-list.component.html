@@ -96,15 +96,7 @@
         @for (user of filteredUsers(); track trackById($index, user)) {
           <tr [class.row--muted]="isMuted(user)">
             <td>
-              <div class="user-cell">
-                <div class="avatar" [style]="avatarStyle(user.fullName, isMuted(user))" aria-hidden="true">
-                  {{ initials(user.fullName) }}
-                </div>
-                <div class="user-cell__text">
-                  <div class="user-cell__name">{{ user.fullName }}</div>
-                  <div class="user-cell__email">{{ user.email }}</div>
-                </div>
-              </div>
+              <app-user-identity [user]="user" [muted]="isMuted(user)" />
             </td>
             <td>
               <span class="badge-wrap">
@@ -123,20 +115,11 @@
               }
             </td>
             <td class="cell-actions">
-              <div class="actions">
-                <app-icon-button tooltip="Editar" ariaLabel="Editar usuario" (click)="goToEdit(user)">
-                  <mat-icon>edit</mat-icon>
-                </app-icon-button>
-                @if (user.status === 'ACTIVE') {
-                  <app-icon-button tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
-                    <mat-icon>lock</mat-icon>
-                  </app-icon-button>
-                } @else {
-                  <app-icon-button tooltip="Activar" ariaLabel="Activar usuario" (click)="onToggleStatus(user)">
-                    <mat-icon>lock_open</mat-icon>
-                  </app-icon-button>
-                }
-              </div>
+              <app-user-row-actions
+                [user]="user"
+                (edit)="goToEdit($event)"
+                (toggleStatus)="onToggleStatus($event)"
+              />
             </td>
           </tr>
         }
@@ -149,13 +132,7 @@
     @for (user of filteredUsers(); track trackById($index, user)) {
       <div class="user-card" [class.user-card--muted]="isMuted(user)">
         <div class="user-card__top">
-          <div class="avatar avatar--lg" [style]="avatarStyle(user.fullName, isMuted(user))" aria-hidden="true">
-            {{ initials(user.fullName) }}
-          </div>
-          <div class="user-card__text">
-            <div class="user-card__name">{{ user.fullName }}</div>
-            <div class="user-card__email">{{ user.email }}</div>
-          </div>
+          <app-user-identity [user]="user" [muted]="isMuted(user)" size="lg" />
         </div>
         <div class="user-card__bottom">
           <div class="user-card__badges">
@@ -164,20 +141,11 @@
             </span>
             <app-status-badge [status]="user.status" />
           </div>
-          <div class="actions">
-            <app-icon-button tooltip="Editar" ariaLabel="Editar usuario" (click)="goToEdit(user)">
-              <mat-icon>edit</mat-icon>
-            </app-icon-button>
-            @if (user.status === 'ACTIVE') {
-              <app-icon-button variant="danger" tooltip="Desactivar" ariaLabel="Desactivar usuario" (click)="onToggleStatus(user)">
-                <mat-icon>lock</mat-icon>
-              </app-icon-button>
-            } @else {
-              <app-icon-button tooltip="Activar" ariaLabel="Activar usuario" (click)="onToggleStatus(user)">
-                <mat-icon>lock_open</mat-icon>
-              </app-icon-button>
-            }
-          </div>
+          <app-user-row-actions
+            [user]="user"
+            (edit)="goToEdit($event)"
+            (toggleStatus)="onToggleStatus($event)"
+          />
         </div>
       </div>
     }

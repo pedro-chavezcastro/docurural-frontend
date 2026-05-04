@@ -19,10 +19,10 @@ import {
 } from '../../../core/models/toggle-status-dialog.models';
 import { RoleBadgeComponent } from './components/role-badge.component';
 import { StatusBadgeComponent } from './components/status-badge.component';
-import { avatarColor, avatarInitials } from './utils/avatar-color';
+import { UserIdentityComponent } from './components/user-identity.component';
+import { UserRowActionsComponent } from './components/user-row-actions.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
-import { IconButtonComponent } from '../../../shared/components/icon-button/icon-button.component';
 
 type SortOption = 'fullNameAsc' | 'fullNameDesc' | 'createdAtDesc' | 'createdAtAsc';
 
@@ -51,9 +51,10 @@ const SORT_OPTIONS: SortOptionConfig[] = [
     MatTooltipModule,
     RoleBadgeComponent,
     StatusBadgeComponent,
+    UserIdentityComponent,
+    UserRowActionsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
-    IconButtonComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
@@ -168,15 +169,6 @@ export class UserListComponent {
     ref.afterClosed().subscribe((result) => {
       if (result?.kind === 'updated') this.loadUsers();
     });
-  }
-
-  protected initials(name: string): string {
-    return avatarInitials(name);
-  }
-
-  protected avatarStyle(name: string, muted: boolean): Record<string, string> {
-    const c = avatarColor(name, muted);
-    return { 'background-color': c.bg, color: c.fg };
   }
 
   protected formatCreated(iso: string): string {

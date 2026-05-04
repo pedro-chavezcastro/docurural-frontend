@@ -4,12 +4,12 @@
   color: var(--color-text-primary);
 }
 
-// ── Botón primario ─────────────────────────────────────────────────
+// ── Botón primario del header ───────────────────────────────────────
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 11px 18px;
   border-radius: var(--radius-md);
   border: none;
@@ -42,21 +42,24 @@
   }
 }
 
-// ── Action bar ─────────────────────────────────────────────────────
+// ── Action bar ───────────────────────────────────────────────��─────
 .action-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   transition: opacity var(--duration-fast) var(--easing-standard);
+
+  &--disabled {
+    opacity: 0.55;
+  }
 }
 
-.action-bar--disabled {
-  opacity: 0.55;
-}
-
+// ── Campo de búsqueda (M20: alineado con _form-field.scss) ─────────
+// Usa los mismos tokens que el mixin de campo de formulario pero con
+// sizing compacto (text-md / padding 11px) propio de un control de filtro.
 .search {
   position: relative;
   flex: 1 1 280px;
@@ -79,15 +82,16 @@
 .search__input {
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 14px 11px 44px;
+  padding: 11px var(--space-4) 11px 44px;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--text-md);
   color: var(--color-text-primary);
-  background: #fff;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   outline: none;
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  transition: border-color var(--duration-fast) var(--easing-standard),
+              box-shadow var(--duration-fast) var(--easing-standard);
 
   &::placeholder {
     color: var(--color-text-muted);
@@ -104,23 +108,24 @@
   }
 }
 
-// ── Trigger de ordenamiento (botón estilo diseño) ──────────────────
+// ── Trigger de ordenamiento ────────────────────────────────────────
 .sort-trigger {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   min-width: 220px;
-  padding: 11px 14px;
-  background: #fff;
+  padding: 11px var(--space-4);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--text-md);
   font-weight: 500;
   color: var(--color-text-primary);
   cursor: pointer;
   flex-shrink: 0;
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  transition: border-color var(--duration-fast) var(--easing-standard),
+              box-shadow var(--duration-fast) var(--easing-standard);
 
   &:hover:not(:disabled) {
     border-color: var(--color-border-strong);
@@ -156,17 +161,16 @@
 .sort-trigger__prefix {
   color: var(--color-text-secondary);
   font-weight: 400;
-  margin-right: 4px;
+  margin-right: var(--space-1);
 }
-
 
 // ── Contador ───────────────────────────────────────────────────────
 .counter {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
-  font-size: 14px;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-md);
   color: var(--color-text-secondary);
 
   mat-icon {
@@ -183,7 +187,7 @@
 
 // ── Tabla (escritorio) ─────────────────────────────────────────────
 .users-table {
-  background: #fff;
+  background: var(--color-bg-card);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-divider);
   overflow: hidden;
@@ -197,13 +201,13 @@
 
   thead th {
     padding: 14px 20px;
-    font-size: 11px;
+    font-size: var(--text-2xs);
     font-weight: 600;
     color: var(--color-text-secondary);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-align: left;
-    background: #FAFBFC;
+    background: var(--color-bg-subtle);
   }
 
   th.th-actions {
@@ -221,7 +225,7 @@
 
   td {
     padding: 16px 20px;
-    font-size: 14px;
+    font-size: var(--text-md);
     vertical-align: middle;
   }
 }
@@ -247,18 +251,9 @@
   text-align: left;
 }
 
-// Filas de usuarios inactivos
+// Filas de usuarios inactivos: sólo afectan a elementos que no son
+// app-user-identity (el estado muted del texto está dentro del componente).
 .row--muted {
-  .user-cell__name {
-    color: var(--color-text-muted);
-    text-decoration: line-through;
-    text-decoration-color: #C8D1DA;
-  }
-
-  .user-cell__email {
-    color: #B4C0CC;
-  }
-
   .cell-date {
     color: var(--color-text-muted);
   }
@@ -266,62 +261,6 @@
   .badge-wrap {
     opacity: 0.6;
   }
-}
-
-// ── Celda Usuario ──────────────────────────────────────────────────
-.user-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.user-cell__text {
-  min-width: 0;
-}
-
-.user-cell__name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-cell__email {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-// ── Avatar ─────────────────────────────────────────────────────────
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.avatar--lg {
-  width: 40px;
-  height: 40px;
-}
-
-// ── Botones de acción ─────────────────────────────────────────────
-.actions {
-  display: inline-flex;
-  gap: 6px;
-  justify-content: center;
 }
 
 // ── Tarjetas (móvil) ───────────────────────────────────────────────
@@ -332,89 +271,49 @@
 }
 
 .user-card {
-  background: #fff;
+  background: var(--color-bg-card);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-divider);
-  padding: 14px;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .user-card__top {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.user-card__text {
-  min-width: 0;
-  flex: 1;
-}
-
-.user-card__name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-card__email {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .user-card__bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .user-card__badges {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
   flex-wrap: wrap;
   min-width: 0;
 }
 
 .user-card--muted {
-  .user-card__name {
-    color: var(--color-text-muted);
-    text-decoration: line-through;
-    text-decoration-color: #C8D1DA;
-  }
-
-  .user-card__email {
-    color: #B4C0CC;
-  }
-
   .badge-wrap {
     opacity: 0.6;
   }
 }
 
-
 // ── Visibilidad responsive ─────────────────────────────────────────
-.desktop-only {
-  display: block;
-}
-
-.mobile-only {
-  display: none;
-}
+.desktop-only { display: block; }
+.mobile-only  { display: none; }
 
 @media (max-width: 768px) {
   .btn-primary--header {
     width: 100%;
-    padding: 14px 16px;
+    padding: 14px var(--space-4);
   }
 
   .action-bar {
@@ -428,11 +327,6 @@
     max-width: none;
   }
 
-  .desktop-only {
-    display: none;
-  }
-
-  .mobile-only {
-    display: flex;
-  }
+  .desktop-only { display: none; }
+  .mobile-only  { display: flex; }
 }
