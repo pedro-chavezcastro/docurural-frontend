@@ -37,3 +37,14 @@ export interface UpdateCategoryResponse {
   status: CategoryStatus;
   message: string;
 }
+
+export interface UpdateCategoryStatusRequest {
+  status: CategoryStatus;
+}
+
+export interface UpdateCategoryStatusResponse {
+  id: number;
+  name: string;
+  status: CategoryStatus;
+  message: string;
+}

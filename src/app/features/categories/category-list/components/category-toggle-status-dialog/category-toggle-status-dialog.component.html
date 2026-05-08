@@ -1,0 +1,60 @@
+<div class="dialog">
+
+  @if (errorMessage()) {
+    <app-alert variant="error" class="dialog__alert">{{ errorMessage() }}</app-alert>
+  }
+
+  <div class="dialog__header">
+    <div
+      class="dialog__icon"
+      [class.dialog__icon--warning]="isDeactivate()"
+      [class.dialog__icon--success]="!isDeactivate()"
+      aria-hidden="true"
+    >
+      <mat-icon>{{ headerIcon() }}</mat-icon>
+    </div>
+    <div class="dialog__copy">
+      <h2 class="dialog__title" mat-dialog-title>{{ title() }}</h2>
+      <p class="dialog__message">
+        @if (isDeactivate()) {
+          ¿Está seguro de desactivar la categoría
+          <strong>"{{ data.category.name }}"</strong>?
+          No podrá usarse para clasificar nuevos documentos.
+        } @else {
+          La categoría
+          <strong>"{{ data.category.name }}"</strong>
+          volverá a estar disponible para clasificar nuevos documentos.
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (showDocumentsCard()) {
+    <div class="dialog__docs">
+      <div class="dialog__docs-head">
+        <mat-icon aria-hidden="true">description</mat-icon>
+        <strong>
+          {{ documentCount() }}
+          {{ documentCount() === 1 ? 'documento seguirá siendo accesible' : 'documentos seguirán siendo accesibles' }}
+        </strong>
+      </div>
+      <p>Los documentos ya clasificados conservan su categoría. Podrá reactivarla en cualquier momento.</p>
+    </div>
+  }
+
+  <div class="dialog__actions">
+    <app-button variant="secondary" [disabled]="loading()" (click)="cancel()">
+      Cancelar
+    </app-button>
+    <app-button
+      [variant]="actionVariant()"
+      [loading]="loading()"
+      [disabled]="actionDisabled()"
+      (click)="confirm()"
+    >
+      <mat-icon aria-hidden="true">{{ actionIcon() }}</mat-icon>
+      {{ actionLabel() }}
+    </app-button>
+  </div>
+
+</div>

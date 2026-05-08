@@ -109,6 +109,27 @@
     }
   }
 
+  // ── Warning ───────────────────────────────────────────────────────
+  &--warning {
+    border: none;
+    color: var(--color-text-inverse);
+    background: var(--color-warning);
+
+    &:hover:not(:disabled) {
+      background: var(--color-warning-text);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
   // ── Loading state ─────────────────────────────────────────────────
   &--loading {
     cursor: progress;
@@ -116,6 +137,7 @@
     &.btn--primary  { background: var(--color-primary-dark); }
     &.btn--danger   { background: var(--color-error-text); }
     &.btn--success  { background: #2D6E31; }
+    &.btn--warning  { background: var(--color-warning-text); }
   }
 }
 

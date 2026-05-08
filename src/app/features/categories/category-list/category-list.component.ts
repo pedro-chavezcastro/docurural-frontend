@@ -8,6 +8,11 @@ import {
   CategoryFormDialogData,
   CategoryFormDialogResult,
 } from './components/category-form-dialog/category-form-dialog.component';
+import {
+  CategoryToggleStatusDialogComponent,
+  CategoryToggleStatusDialogData,
+  CategoryToggleStatusDialogResult,
+} from './components/category-toggle-status-dialog/category-toggle-status-dialog.component';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Category } from '../../../core/models/category.model';
@@ -138,8 +143,25 @@ export class CategoryListComponent {
     });
   }
 
-  protected onToggleStatus(_category: Category): void {
-    this.notifications.info('Próximamente', 'La activación/desactivación estará disponible en breve.');
+  protected onToggleStatus(category: Category): void {
+    const action = category.status === 'ACTIVE' ? 'deactivate' : 'activate';
+
+    const ref = this.dialog.open<
+      CategoryToggleStatusDialogComponent,
+      CategoryToggleStatusDialogData,
+      CategoryToggleStatusDialogResult
+    >(CategoryToggleStatusDialogComponent, {
+      data: { category, action },
+      width: '400px',
+      maxWidth: '90vw',
+      autoFocus: 'first-tabbable',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result?.success) return;
+      this.notifications.success('Estado actualizado', result.message);
+      this.loadCategories();
+    });
   }
 
   protected formatCreated(iso: string): string {
