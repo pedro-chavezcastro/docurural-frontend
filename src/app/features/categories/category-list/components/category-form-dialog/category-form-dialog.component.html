@@ -1,0 +1,111 @@
+<div class="dialog-container">
+
+  <div class="dialog-header">
+    <h2 class="dialog-title">{{ title() }}</h2>
+    <button
+      class="dialog-close"
+      type="button"
+      (click)="cancel()"
+      aria-label="Cerrar formulario"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  @if (submitError()) {
+    <app-alert variant="error" class="dialog-alert">{{ submitError() }}</app-alert>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Nombre de la categoría -->
+    <div class="field">
+      <div class="field__label-row">
+        <label class="field__label" for="name">
+          Nombre de la categoría
+          <strong class="field__required" aria-hidden="true">*</strong>
+        </label>
+        <span
+          class="field__counter"
+          [class.field__counter--over]="nameLen() > 100"
+          aria-hidden="true"
+        >{{ nameLen() }}/100</span>
+      </div>
+      <div
+        class="field__control"
+        [class.field__control--error]="form.controls.name.invalid && form.controls.name.touched"
+      >
+        <input
+          class="field__input"
+          id="name"
+          type="text"
+          formControlName="name"
+          maxlength="100"
+          autocomplete="off"
+          placeholder="Ej. Proyectos Biotecnología"
+          [attr.aria-required]="true"
+          [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched || null"
+          aria-describedby="name-error name-hint"
+        />
+      </div>
+      @if (nameError(); as msg) {
+        <p class="field__error" id="name-error">
+          <mat-icon aria-hidden="true">error</mat-icon>
+          {{ msg }}
+        </p>
+      } @else {
+        <small class="field__hint" id="name-hint">Entre 3 y 100 caracteres. Debe ser único en el sistema.</small>
+      }
+    </div>
+
+    <!-- Descripción -->
+    <div class="field">
+      <div class="field__label-row">
+        <label class="field__label" for="description">
+          Descripción
+          <span class="field__optional">(opcional)</span>
+        </label>
+        <span
+          class="field__counter"
+          [class.field__counter--over]="descLen() > 500"
+          aria-hidden="true"
+        >{{ descLen() }}/500</span>
+      </div>
+      <div
+        class="field__control"
+        [class.field__control--error]="form.controls.description.invalid && form.controls.description.touched"
+      >
+        <textarea
+          class="field__textarea"
+          id="description"
+          formControlName="description"
+          rows="4"
+          maxlength="500"
+          autocomplete="off"
+          placeholder="Describa brevemente qué tipo de documentos agrupa esta categoría (opcional)."
+          [attr.aria-invalid]="form.controls.description.invalid && form.controls.description.touched || null"
+          aria-describedby="desc-error desc-hint"
+        ></textarea>
+      </div>
+      @if (descriptionError(); as msg) {
+        <p class="field__error" id="desc-error">
+          <mat-icon aria-hidden="true">error</mat-icon>
+          {{ msg }}
+        </p>
+      } @else {
+        <small class="field__hint" id="desc-hint">Máximo 500 caracteres. Ayuda a otros administradores a clasificar correctamente.</small>
+      }
+    </div>
+
+    <div class="dialog-footer">
+      <app-button variant="secondary" type="button" [disabled]="loading()" (click)="cancel()">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [loading]="loading()">
+        {{ loading() ? loadingLabel() : primaryLabel() }}
+      </app-button>
+    </div>
+
+  </form>
+
+</div>

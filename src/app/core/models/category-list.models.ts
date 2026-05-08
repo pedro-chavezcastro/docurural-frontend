@@ -1,4 +1,5 @@
 import { Category } from './category.model';
+import { CategoryStatus } from './category-status.model';
 
 export type CategorySortBy = 'name' | 'createdAt';
 export type CategorySortDir = 'asc' | 'desc';
@@ -8,4 +9,18 @@ export interface CategoryListResponse {
   activeCategories: number;
   inactiveCategories: number;
   categories: Category[];
+}
+
+export interface CreateCategoryRequest {
+  name: string;
+  description: string | null;
+}
+
+export interface CreateCategoryResponse {
+  id: number;
+  name: string;
+  description: string | null;
+  status: CategoryStatus;
+  createdAt: string;
+  message: string;
 }

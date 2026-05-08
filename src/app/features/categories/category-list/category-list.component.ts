@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  CategoryFormDialogComponent,
+  CategoryFormDialogData,
+  CategoryFormDialogResult,
+} from './components/category-form-dialog/category-form-dialog.component';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Category } from '../../../core/models/category.model';
@@ -52,6 +57,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
 export class CategoryListComponent {
   private readonly categoriesService = inject(CategoriesService);
   private readonly notifications     = inject(NotificationService);
+  private readonly dialog            = inject(MatDialog);
 
   protected readonly loading            = signal(false);
   protected readonly categories         = signal<Category[]>([]);
@@ -101,7 +107,19 @@ export class CategoryListComponent {
   }
 
   protected goToCreate(): void {
-    this.notifications.info('Próximamente', 'La creación de categorías estará disponible en breve.');
+    const ref = this.dialog.open<
+      CategoryFormDialogComponent,
+      CategoryFormDialogData,
+      CategoryFormDialogResult
+    >(CategoryFormDialogComponent, {
+      data: { mode: 'create' },
+      width: '480px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'created') this.loadCategories();
+    });
   }
 
   protected goToEdit(_category: Category): void {
