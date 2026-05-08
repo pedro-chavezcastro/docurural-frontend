@@ -20,6 +20,8 @@ import { Category } from '../../../../../core/models/category.model';
 import {
   CreateCategoryRequest,
   CreateCategoryResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
 } from '../../../../../core/models/category-list.models';
 
 export type CategoryFormDialogMode = 'create' | 'edit';
@@ -71,10 +73,15 @@ export class CategoryFormDialogComponent implements OnInit {
   protected readonly nameLen = computed(() => this.nameValue().length);
   protected readonly descLen = computed(() => this.descValue().length);
 
-  protected readonly isEdit      = computed(() => this.data.mode === 'edit');
-  protected readonly title       = computed(() => this.isEdit() ? 'Editar categoría' : 'Nueva categoría');
+  protected readonly isEdit       = computed(() => this.data.mode === 'edit');
+  protected readonly title        = computed(() => this.isEdit() ? 'Editar categoría' : 'Nueva categoría');
   protected readonly primaryLabel = computed(() => this.isEdit() ? 'Guardar cambios' : 'Crear categoría');
   protected readonly loadingLabel = computed(() => this.isEdit() ? 'Actualizando...' : 'Guardando...');
+
+  protected readonly showDocumentBanner = computed(
+    () => this.isEdit() && (this.data.category?.documentCount ?? 0) > 0,
+  );
+  protected readonly documentCount = computed(() => this.data.category?.documentCount ?? 0);
 
   ngOnInit(): void {
     if (this.isEdit() && this.data.category) {
@@ -113,34 +120,51 @@ export class CategoryFormDialogComponent implements OnInit {
     this.dialogRef.disableClose = true;
 
     const raw = this.form.getRawValue();
-    const payload: CreateCategoryRequest = {
+    const payload: CreateCategoryRequest | UpdateCategoryRequest = {
       name:        raw.name.trim(),
       description: raw.description.trim() || null,
     };
 
-    this.categoriesService
-      .create(payload)
-      .pipe(
-        finalize(() => {
-          this.loading.set(false);
-          this.form.enable();
-          this.dialogRef.disableClose = false;
-        }),
-      )
-      .subscribe({
-        next: (res) => {
-          this.notifications.success(
-            'Categoría creada',
-            'La categoría está disponible para clasificar documentos.',
-          );
-          this.dialogRef.close({ kind: 'created', category: res });
-        },
-        error: (err: HttpErrorResponse) => this.handleError(err),
-      });
+    const request$ = this.isEdit() && this.data.category
+      ? this.categoriesService.update(this.data.category.id, payload)
+      : this.categoriesService.create(payload);
+
+    request$.pipe(
+      finalize(() => {
+        this.loading.set(false);
+        this.form.enable();
+        this.dialogRef.disableClose = false;
+      }),
+    ).subscribe({
+      next: (res) => this.handleSuccess(res),
+      error: (err: HttpErrorResponse) => this.handleError(err),
+    });
   }
 
   protected cancel(): void {
     this.dialogRef.close();
+  }
+
+  private handleSuccess(res: CreateCategoryResponse | UpdateCategoryResponse): void {
+    if (this.isEdit() && this.data.category) {
+      this.notifications.success(
+        'Categoría actualizada',
+        'Los cambios se guardaron correctamente.',
+      );
+      const updated: Category = {
+        ...this.data.category,
+        name:        res.name,
+        description: res.description,
+        status:      res.status,
+      };
+      this.dialogRef.close({ kind: 'updated', category: updated });
+    } else {
+      this.notifications.success(
+        'Categoría creada',
+        'La categoría está disponible para clasificar documentos.',
+      );
+      this.dialogRef.close({ kind: 'created', category: res as CreateCategoryResponse });
+    }
   }
 
   private handleError(err: HttpErrorResponse): void {
@@ -165,10 +189,21 @@ export class CategoryFormDialogComponent implements OnInit {
         }
         break;
       case 403:
-        this.submitError.set('No tiene permisos para crear categorías.');
+        this.submitError.set(
+          this.isEdit()
+            ? 'No es posible editar la categoría. Verifique sus permisos o que la categoría siga activa.'
+            : 'No tiene permisos para crear categorías.',
+        );
+        break;
+      case 404:
+        this.submitError.set('La categoría ya no existe. Cierre el formulario y recargue el listado.');
         break;
       default:
-        this.submitError.set('No fue posible crear la categoría. Intente de nuevo.');
+        this.submitError.set(
+          this.isEdit()
+            ? 'No fue posible guardar los cambios. Intente de nuevo.'
+            : 'No fue posible crear la categoría. Intente de nuevo.',
+        );
     }
   }
 }

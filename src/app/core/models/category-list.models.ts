@@ -24,3 +24,16 @@ export interface CreateCategoryResponse {
   createdAt: string;
   message: string;
 }
+
+export interface UpdateCategoryRequest {
+  name: string;
+  description: string | null;
+}
+
+export interface UpdateCategoryResponse {
+  id: number;
+  name: string;
+  description: string | null;
+  status: CategoryStatus;
+  message: string;
+}

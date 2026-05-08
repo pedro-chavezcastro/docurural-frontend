@@ -122,8 +122,20 @@ export class CategoryListComponent {
     });
   }
 
-  protected goToEdit(_category: Category): void {
-    this.notifications.info('Próximamente', 'La edición de categorías estará disponible en breve.');
+  protected goToEdit(category: Category): void {
+    const ref = this.dialog.open<
+      CategoryFormDialogComponent,
+      CategoryFormDialogData,
+      CategoryFormDialogResult
+    >(CategoryFormDialogComponent, {
+      data: { mode: 'edit', category },
+      width: '480px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'updated') this.loadCategories();
+    });
   }
 
   protected onToggleStatus(_category: Category): void {

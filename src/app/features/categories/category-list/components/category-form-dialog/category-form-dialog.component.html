@@ -16,6 +16,14 @@
     <app-alert variant="error" class="dialog-alert">{{ submitError() }}</app-alert>
   }
 
+  @if (showDocumentBanner()) {
+    <app-alert variant="info" class="dialog-alert">
+      <strong>{{ documentCount() }}</strong>
+      {{ documentCount() === 1 ? 'documento está clasificado' : 'documentos están clasificados' }}
+      en esta categoría. Conservarán su asociación con el nuevo nombre.
+    </app-alert>
+  }
+
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
     <!-- Nombre de la categoría -->

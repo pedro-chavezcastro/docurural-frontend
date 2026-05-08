@@ -8,6 +8,8 @@ import {
   CategoryListResponse,
   CreateCategoryRequest,
   CreateCategoryResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
 } from '../models/category-list.models';
 
 @Injectable({ providedIn: 'root' })
@@ -23,5 +25,12 @@ export class CategoriesService {
 
   create(payload: CreateCategoryRequest): Observable<CreateCategoryResponse> {
     return this.http.post<CreateCategoryResponse>(`${environment.apiBaseUrl}/categories`, payload);
+  }
+
+  update(id: number, payload: UpdateCategoryRequest): Observable<UpdateCategoryResponse> {
+    return this.http.put<UpdateCategoryResponse>(
+      `${environment.apiBaseUrl}/categories/${id}`,
+      payload,
+    );
   }
 }
