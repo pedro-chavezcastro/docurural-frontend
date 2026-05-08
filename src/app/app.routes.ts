@@ -28,6 +28,15 @@ export const routes: Routes = [
           ),
         title: 'Usuarios — DocuRural',
       },
+      {
+        path: 'categories',
+        canActivate: [roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/categories/category-list/category-list.component').then(
+            (m) => m.CategoryListComponent,
+          ),
+        title: 'Categorías — DocuRural',
+      },
     ],
   },
   {

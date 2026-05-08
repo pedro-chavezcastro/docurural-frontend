@@ -1,0 +1,162 @@
+<!-- Cabecera de página -->
+<app-page-header
+  kicker="Administración"
+  title="Categorías"
+  subtitle="Clasifique los documentos del repositorio según el tipo y la procedencia."
+>
+  <app-button actions variant="primary" class="header-action" (click)="goToCreate()">
+    <mat-icon>add</mat-icon>
+    <span>Nueva categoría</span>
+  </app-button>
+</app-page-header>
+
+<!-- Action bar -->
+<div class="action-bar" [class.action-bar--disabled]="!loading() && totalCategories() === 0">
+  <button
+    type="button"
+    class="sort-trigger"
+    [matMenuTriggerFor]="sortMenu"
+    [disabled]="!loading() && totalCategories() === 0"
+    aria-label="Ordenar listado"
+  >
+    <mat-icon class="sort-trigger__icon" aria-hidden="true">swap_vert</mat-icon>
+    <span class="sort-trigger__label">
+      <span class="sort-trigger__prefix">Ordenar:</span>
+      {{ currentSortLabel() }}
+    </span>
+    <mat-icon class="sort-trigger__chevron" aria-hidden="true">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #sortMenu="matMenu" panelClass="sort-menu" xPosition="before">
+    @for (opt of sortOptions; track opt.value) {
+      <button
+        type="button"
+        mat-menu-item
+        [class.sort-menu__item--active]="selectedSort() === opt.value"
+        (click)="onSortChange(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </mat-menu>
+</div>
+
+<!-- Contador -->
+<div class="counter">
+  <span class="counter__total">
+    <mat-icon aria-hidden="true">local_offer</mat-icon>
+    <strong>{{ totalCategories() }} {{ totalCategories() === 1 ? 'categoría' : 'categorías' }}</strong>
+  </span>
+  <span class="counter__pill counter__pill--active">
+    <span class="counter__dot counter__dot--active" aria-hidden="true"></span>
+    {{ activeCategories() }} activas
+  </span>
+  <span class="counter__pill counter__pill--inactive">
+    <span class="counter__dot counter__dot--inactive" aria-hidden="true"></span>
+    {{ inactiveCategories() }} inactivas
+  </span>
+</div>
+
+@if (loading()) {
+  <app-empty-state variant="loading">Cargando categorías…</app-empty-state>
+} @else if (totalCategories() === 0) {
+  <app-empty-state
+    variant="empty"
+    icon="local_offer"
+    title="No hay categorías registradas en el sistema"
+    description="Cree la primera categoría para empezar a clasificar los documentos del repositorio."
+  >
+    <app-button actions variant="primary" (click)="goToCreate()">
+      <mat-icon>add</mat-icon>
+      <span>Nueva categoría</span>
+    </app-button>
+  </app-empty-state>
+} @else {
+  <!-- Tabla (≥ 768px) -->
+  <div class="categories-table desktop-only">
+    <table>
+      <colgroup>
+        <col class="col-category" />
+        <col class="col-description" />
+        <col class="col-documents" />
+        <col class="col-status" />
+        <col class="col-created" />
+        <col class="col-actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Descripción</th>
+          <th class="th-right">Documentos</th>
+          <th>Estado</th>
+          <th>Fecha de creación</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (category of categories(); track trackById($index, category)) {
+          <tr [class.row--muted]="isMuted(category)">
+            <td>
+              <div class="cell-category">
+                <app-category-icon-badge [name]="category.name" [muted]="isMuted(category)" />
+                <div class="cell-category__info">
+                  <span class="cell-category__name">{{ category.name }}</span>
+                  <span class="cell-category__meta">Creada por {{ category.createdBy }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="cell-description">{{ category.description }}</span>
+            </td>
+            <td class="td-right">
+              <span class="doc-count-pill" [class.doc-count-pill--muted]="isMuted(category)">
+                <mat-icon aria-hidden="true">description</mat-icon>
+                {{ category.documentCount }}
+              </span>
+            </td>
+            <td>
+              <app-category-status-badge [status]="category.status" />
+            </td>
+            <td class="cell-date">{{ formatCreated(category.createdAt) }}</td>
+            <td class="cell-actions">
+              <app-category-row-actions
+                [category]="category"
+                (edit)="goToEdit($event)"
+                (toggleStatus)="onToggleStatus($event)"
+              />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tarjetas (< 768px) -->
+  <div class="category-cards mobile-only">
+    @for (category of categories(); track trackById($index, category)) {
+      <div class="category-card" [class.category-card--muted]="isMuted(category)">
+        <div class="category-card__top">
+          <app-category-icon-badge [name]="category.name" [muted]="isMuted(category)" />
+          <div class="category-card__info">
+            <span class="category-card__name">{{ category.name }}</span>
+            <span class="category-card__desc">{{ category.description }}</span>
+          </div>
+        </div>
+        <div class="category-card__bottom">
+          <div class="category-card__meta">
+            <app-category-status-badge [status]="category.status" />
+            <span class="doc-count-pill" [class.doc-count-pill--muted]="isMuted(category)">
+              <mat-icon aria-hidden="true">description</mat-icon>
+              {{ category.documentCount }} doc.
+            </span>
+          </div>
+          <app-category-row-actions
+            [category]="category"
+            (edit)="goToEdit($event)"
+            (toggleStatus)="onToggleStatus($event)"
+          />
+        </div>
+      </div>
+    }
+  </div>
+}

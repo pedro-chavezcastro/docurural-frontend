@@ -43,8 +43,8 @@
           <span class="sb-nav__label">Usuarios</span>
           <span class="sb-admin-badge">ADMIN</span>
         </button>
-        <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
-          <mat-icon>sell</mat-icon>
+        <button class="sb-nav__item" routerLink="/categories" routerLinkActive="sb-nav__item--active" (click)="sidebarOpen.set(false)">
+          <mat-icon>local_offer</mat-icon>
           <span class="sb-nav__label">Categorías</span>
           <span class="sb-admin-badge">ADMIN</span>
         </button>
