@@ -19,6 +19,7 @@ import { IconButtonComponent } from '../../../../shared/components/icon-button/i
           <mat-icon>edit</mat-icon>
         </app-icon-button>
         <app-icon-button
+          variant="danger"
           tooltip="Desactivar"
           ariaLabel="Desactivar categoría"
           (click)="toggleStatus.emit(category())"
