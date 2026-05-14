@@ -1,0 +1,29 @@
+import { DocumentFormat } from './document-format.model';
+
+export interface CategoryRef {
+  id: number;
+  name: string;
+}
+
+export interface UploadedByRef {
+  id: number;
+  fullName: string;
+}
+
+export interface DocumentDetailResponse {
+  id: number;
+  title: string;
+  description: string | null;
+  category: CategoryRef;
+  responsibleArea: string;
+  documentDate: string;
+  fileFormat: DocumentFormat;
+  fileSizeBytes: number;
+  originalFileName: string;
+  uploadedBy: UploadedByRef;
+  createdAt: string;
+}
+
+export function isPreviewableFormat(fmt: DocumentFormat): boolean {
+  return fmt === 'PDF' || fmt === 'JPG' || fmt === 'PNG';
+}

@@ -1,0 +1,185 @@
+<!-- Cabecera de página -->
+<app-page-header
+  kicker="Documentos"
+  [title]="metadata()?.title ?? 'Cargando documento…'"
+>
+  <div actions class="header-actions">
+    <app-button variant="secondary" (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Volver al listado</span>
+    </app-button>
+    @if (metadata() && !loadingBlob()) {
+      <app-button variant="primary" (click)="onDownload()">
+        <mat-icon>download</mat-icon>
+        <span>Descargar</span>
+      </app-button>
+    }
+  </div>
+</app-page-header>
+
+<!-- Estado: cargando metadatos -->
+@if (loadingMetadata()) {
+  <app-empty-state variant="loading">Cargando documento…</app-empty-state>
+
+<!-- Estado: documento no encontrado -->
+} @else if (errorKind() === 'not-found') {
+  <app-empty-state
+    variant="empty"
+    icon="search_off"
+    title="Documento no encontrado"
+    description="El documento que intenta abrir no existe o fue eliminado."
+  >
+    <div actions>
+      <app-button variant="secondary" (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Volver al listado</span>
+      </app-button>
+    </div>
+  </app-empty-state>
+
+<!-- Estado: error de red al cargar metadatos -->
+} @else if (errorKind() === 'network' && !metadata()) {
+  <app-empty-state
+    variant="empty"
+    icon="wifi_off"
+    title="No se pudo cargar el documento"
+    description="Verifique su conexión e intente nuevamente."
+  />
+
+<!-- Vista principal: metadatos cargados -->
+} @else if (metadata()) {
+  <section class="doc-detail">
+
+    <!-- Área del visor -->
+    <div class="doc-detail__viewer">
+
+      @if (loadingBlob()) {
+        <app-empty-state variant="loading">Cargando archivo…</app-empty-state>
+
+      } @else if (errorKind() === 'file-missing') {
+        <app-empty-state
+          variant="empty"
+          icon="error_outline"
+          title="Archivo no disponible"
+          description="El archivo no está disponible. Contacte al administrador."
+        />
+
+      } @else if (metadata()!.fileFormat === 'PDF') {
+        @if (safeUrl()) {
+          <iframe
+            class="doc-detail__pdf-frame"
+            [src]="safeUrl()"
+            title="Visor de documento PDF"
+          ></iframe>
+        }
+
+      } @else if (metadata()!.fileFormat === 'JPG' || metadata()!.fileFormat === 'PNG') {
+        @if (objectUrl()) {
+          <div class="doc-detail__image-wrapper">
+            <div class="doc-detail__image-controls">
+              <app-icon-button
+                tooltip="Reducir zoom"
+                ariaLabel="Reducir zoom"
+                [disabled]="zoomLevel() <= 0.25"
+                (click)="zoomOut()"
+              >
+                <mat-icon>zoom_out</mat-icon>
+              </app-icon-button>
+              <span class="doc-detail__zoom-label" aria-live="polite">{{ zoomPercent() }}%</span>
+              <app-icon-button
+                tooltip="Aumentar zoom"
+                ariaLabel="Aumentar zoom"
+                [disabled]="zoomLevel() >= 4"
+                (click)="zoomIn()"
+              >
+                <mat-icon>zoom_in</mat-icon>
+              </app-icon-button>
+              <app-icon-button
+                tooltip="Tamaño completo"
+                ariaLabel="Ver a tamaño completo"
+                (click)="onFullscreen()"
+              >
+                <mat-icon>fullscreen</mat-icon>
+              </app-icon-button>
+            </div>
+            <div class="doc-detail__image-container" #imageContainer>
+              <img
+                class="doc-detail__image"
+                [src]="objectUrl()"
+                [alt]="metadata()!.title"
+                [style.transform]="'scale(' + zoomLevel() + ')'"
+              />
+            </div>
+          </div>
+        }
+
+      } @else {
+        <!-- DOCX / XLSX: sin preview -->
+        <app-empty-state
+          variant="empty"
+          icon="description"
+          title="Vista previa no disponible"
+          [description]="'Los archivos ' + formatLabel() + ' se pueden descargar pero no se previsualizan en el navegador.'"
+        >
+          <div actions>
+            <app-button variant="primary" (click)="onDownload()">
+              <mat-icon>download</mat-icon>
+              <span>Descargar para ver</span>
+            </app-button>
+          </div>
+        </app-empty-state>
+      }
+    </div>
+
+    <!-- Panel de metadatos -->
+    <aside class="doc-detail__meta">
+      <h2 class="doc-detail__meta-title">Información del documento</h2>
+      <dl class="meta-list">
+        <div class="meta-list__item">
+          <dt>Título</dt>
+          <dd>{{ metadata()!.title }}</dd>
+        </div>
+        @if (metadata()!.description) {
+          <div class="meta-list__item">
+            <dt>Descripción</dt>
+            <dd>{{ metadata()!.description }}</dd>
+          </div>
+        }
+        <div class="meta-list__item">
+          <dt>Categoría</dt>
+          <dd>
+            <app-document-category-pill [name]="metadata()!.category.name" />
+          </dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Área responsable</dt>
+          <dd>{{ metadata()!.responsibleArea }}</dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Fecha del documento</dt>
+          <dd>{{ formatDocumentDate(metadata()!.documentDate) }}</dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Formato</dt>
+          <dd class="meta-format">
+            <app-document-format-icon [format]="metadata()!.fileFormat" />
+            <span>{{ formatLabel() }}</span>
+          </dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Tamaño</dt>
+          <dd>{{ formatFileSize(metadata()!.fileSizeBytes) }}</dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Subido por</dt>
+          <dd>{{ metadata()!.uploadedBy.fullName }}</dd>
+        </div>
+        <div class="meta-list__item">
+          <dt>Fecha de carga</dt>
+          <dd>{{ formatCreatedAt(metadata()!.createdAt) }}</dd>
+        </div>
+      </dl>
+    </aside>
+
+  </section>
+}

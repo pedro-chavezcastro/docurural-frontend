@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -73,6 +74,7 @@ export class DocumentListComponent {
   private readonly notifications    = inject(NotificationService);
   private readonly auth             = inject(AuthService);
   private readonly dialog           = inject(MatDialog);
+  private readonly router           = inject(Router);
 
   protected readonly loading        = signal(false);
   protected readonly documents      = signal<Document[]>([]);
@@ -191,7 +193,7 @@ export class DocumentListComponent {
   }
 
   protected onView(doc: Document): void {
-    this.notifications.info('Próximamente', `La visualización del documento "${doc.title}" se implementará en la HU-11.`);
+    this.router.navigate(['/documents', doc.id]);
   }
 
   protected onDownload(doc: Document): void {

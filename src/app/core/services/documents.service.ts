@@ -10,6 +10,7 @@ import {
   BatchUploadDocumentResponse,
   UploadDocumentResponse,
 } from '../models/upload-document.models';
+import { DocumentDetailResponse } from '../models/document-detail.model';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -41,5 +42,13 @@ export class DocumentsService {
     );
   }
 
-  // view, download, update, delete — se implementarán en HU-11, HU-12, HU-13, HU-14
+  getById(id: number): Observable<DocumentDetailResponse> {
+    return this.http.get<DocumentDetailResponse>(`${environment.apiBaseUrl}/documents/${id}`);
+  }
+
+  getViewBlob(id: number): Observable<Blob> {
+    return this.http.get(`${environment.apiBaseUrl}/documents/${id}/view`, { responseType: 'blob' });
+  }
+
+  // download, update, delete — se implementarán en HU-12, HU-13, HU-14
 }
