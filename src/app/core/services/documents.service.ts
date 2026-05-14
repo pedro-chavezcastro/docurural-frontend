@@ -1,12 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   DocumentListParams,
   DocumentListResponse,
 } from '../models/document-list.models';
-import { UploadDocumentResponse } from '../models/upload-document.models';
+import {
+  BatchUploadDocumentResponse,
+  UploadDocumentResponse,
+} from '../models/upload-document.models';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -27,6 +30,14 @@ export class DocumentsService {
     return this.http.post<UploadDocumentResponse>(
       `${environment.apiBaseUrl}/documents`,
       formData,
+    );
+  }
+
+  createBatch(formData: FormData): Observable<HttpEvent<BatchUploadDocumentResponse>> {
+    return this.http.post<BatchUploadDocumentResponse>(
+      `${environment.apiBaseUrl}/documents/batch`,
+      formData,
+      { reportProgress: true, observe: 'events' },
     );
   }
 

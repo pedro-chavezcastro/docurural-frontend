@@ -38,3 +38,19 @@ export interface UploadDocumentResponse {
   createdAt: string;
   message: string;
 }
+
+export const MAX_BATCH_FILES = 5;
+
+export interface BatchUploadItemResult {
+  fileName: string;
+  success: boolean;
+  documentId: number | null;
+  errorMessage: string | null;
+}
+
+export interface BatchUploadDocumentResponse {
+  totalReceived: number;
+  totalSuccessful: number;
+  totalFailed: number;
+  results: BatchUploadItemResult[];
+}

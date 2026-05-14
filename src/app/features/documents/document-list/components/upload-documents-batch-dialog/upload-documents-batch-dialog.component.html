@@ -1,0 +1,329 @@
+<div class="dialog-container">
+
+  <div class="dialog-header">
+    <h2 class="dialog-title">Carga múltiple de documentos</h2>
+    <button
+      class="dialog-close"
+      type="button"
+      [disabled]="phase() === 'uploading'"
+      (click)="cancel()"
+      aria-label="Cerrar formulario"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  @if (submitError()) {
+    <app-alert variant="error" class="dialog-alert">{{ submitError() }}</app-alert>
+  }
+
+  <form class="dialog-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <div class="dialog-fields">
+
+      <!-- Zona de arrastre (visible en fase compose mientras no se alcance el límite) -->
+      @if (phase() === 'compose') {
+        <div class="field">
+          <label class="field__label">
+            Archivos
+            <strong class="field__required" aria-hidden="true">*</strong>
+            <span class="field__hint-inline">Máximo {{ maxBatchFiles }} archivos</span>
+          </label>
+
+          @if (files().length < maxBatchFiles) {
+            <div
+              class="dropzone"
+              [class.dropzone--dragover]="dragOver()"
+              [class.dropzone--error]="fileError() && files().length === 0"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="files().length === 0
+                ? 'Zona de carga. Haga clic o arrastre archivos aquí.'
+                : 'Agregar más archivos. Puede añadir ' + (maxBatchFiles - files().length) + ' más.'"
+              (click)="fileInput.click()"
+              (keydown.enter)="fileInput.click()"
+              (keydown.space)="fileInput.click(); $event.preventDefault()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave()"
+              (drop)="onDrop($event)"
+            >
+              @if (files().length === 0 && fileError()) {
+                <div class="dropzone__icon-circle dropzone__icon-circle--error">
+                  <mat-icon aria-hidden="true">error</mat-icon>
+                </div>
+              } @else {
+                <div class="dropzone__icon-circle">
+                  <mat-icon aria-hidden="true">{{ files().length === 0 ? 'cloud_upload' : 'add' }}</mat-icon>
+                </div>
+              }
+
+              @if (files().length === 0) {
+                <div class="dropzone__prompt">
+                  Arrastre hasta {{ maxBatchFiles }} archivos aquí o
+                  <span class="dropzone__link">seleccione del equipo</span>
+                </div>
+                <div class="dropzone__subtitle">PDF, DOCX, XLSX, JPG o PNG. Máximo 10 MB por archivo.</div>
+              } @else {
+                <div class="dropzone__prompt">
+                  <span class="dropzone__link">Agregar más archivos</span>
+                  &nbsp;(puede añadir {{ maxBatchFiles - files().length }} más)
+                </div>
+              }
+
+              @if (fileError()) {
+                <div class="dropzone__error-text">
+                  <mat-icon aria-hidden="true">error</mat-icon>
+                  {{ fileError() }}
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="field__hint field__hint--limit">
+              <mat-icon aria-hidden="true">info</mat-icon>
+              Ha alcanzado el máximo de {{ maxBatchFiles }} archivos.
+            </p>
+          }
+
+          <input
+            #fileInput
+            type="file"
+            multiple
+            hidden
+            accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png"
+            (change)="onFileInputChange($event)"
+            aria-hidden="true"
+          />
+        </div>
+      }
+
+      <!-- Lista de archivos -->
+      @if (files().length > 0) {
+        <ul class="file-list" aria-label="Archivos seleccionados">
+          @for (file of files(); track file.id) {
+            <li class="file-row" [class.file-row--success]="file.status === 'success'" [class.file-row--error]="file.status === 'error'">
+
+              <app-document-format-icon
+                class="file-row__icon"
+                [format]="inferFormat(file.file.name)"
+              />
+
+              <div class="file-row__content">
+                @if (phase() === 'compose') {
+                  <input
+                    class="file-row__title-input"
+                    type="text"
+                    #titleInput
+                    [value]="file.title"
+                    [attr.maxlength]="maxTitleLength"
+                    placeholder="Título del documento"
+                    autocomplete="off"
+                    [attr.aria-label]="'Título para ' + file.file.name"
+                    (input)="updateTitle(file.id, titleInput.value)"
+                  />
+                } @else {
+                  <span class="file-row__title-text">{{ file.title }}</span>
+                }
+                <span class="file-row__meta">{{ file.file.name }} · {{ formatSize(file.file.size) }}</span>
+
+                @if (phase() === 'uploading') {
+                  <mat-progress-bar
+                    class="file-row__progress"
+                    mode="determinate"
+                    [value]="globalProgress()"
+                    [attr.aria-label]="'Progreso de carga de ' + file.file.name"
+                  />
+                }
+
+                @if (file.status === 'error' && file.errorMessage) {
+                  <p class="file-row__error-msg">
+                    <mat-icon aria-hidden="true">error</mat-icon>
+                    {{ file.errorMessage }}
+                  </p>
+                }
+              </div>
+
+              @if (phase() !== 'compose') {
+                <span
+                  class="file-row__status"
+                  [class.file-row__status--uploading]="file.status === 'uploading'"
+                  [class.file-row__status--success]="file.status === 'success'"
+                  [class.file-row__status--error]="file.status === 'error'"
+                  [class.file-row__status--pending]="file.status === 'pending'"
+                >
+                  @switch (file.status) {
+                    @case ('uploading') {
+                      <mat-icon aria-hidden="true">upload</mat-icon>
+                      Subiendo
+                    }
+                    @case ('success') {
+                      <mat-icon aria-hidden="true">check_circle</mat-icon>
+                      Cargado
+                    }
+                    @case ('error') {
+                      <mat-icon aria-hidden="true">error</mat-icon>
+                      Error
+                    }
+                    @default {
+                      <mat-icon aria-hidden="true">schedule</mat-icon>
+                      En cola
+                    }
+                  }
+                </span>
+              }
+
+              @if (phase() === 'compose') {
+                <button
+                  type="button"
+                  class="file-row__remove"
+                  [attr.aria-label]="'Quitar ' + file.file.name"
+                  (click)="removeFile(file.id)"
+                >
+                  <mat-icon aria-hidden="true">delete</mat-icon>
+                </button>
+              }
+
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Resumen final (fase done) -->
+      @if (phase() === 'done') {
+        <div
+          class="summary-card"
+          [class.summary-card--success]="summary().failed === 0"
+          [class.summary-card--partial]="summary().failed > 0 && summary().success > 0"
+          [class.summary-card--error]="summary().success === 0"
+          role="status"
+          aria-live="polite"
+        >
+          @if (summary().failed === 0) {
+            <mat-icon class="summary-card__icon summary-card__icon--success" aria-hidden="true">check_circle</mat-icon>
+            <p class="summary-card__text">
+              {{ summary().success }} de {{ summary().total }} archivos cargados correctamente.
+            </p>
+          } @else if (summary().success === 0) {
+            <mat-icon class="summary-card__icon summary-card__icon--error" aria-hidden="true">cancel</mat-icon>
+            <p class="summary-card__text">
+              Ningún archivo se cargó correctamente. Revise los errores e intente nuevamente.
+            </p>
+          } @else {
+            <mat-icon class="summary-card__icon summary-card__icon--warning" aria-hidden="true">warning</mat-icon>
+            <p class="summary-card__text">
+              {{ summary().success }} de {{ summary().total }} archivos cargados.
+              {{ summary().failed }} {{ summary().failed === 1 ? 'falló' : 'fallaron' }}.
+            </p>
+          }
+        </div>
+      }
+
+      <!-- Campos comunes (solo en fases compose y uploading) -->
+      @if (phase() !== 'done') {
+        <div class="metadata-info" role="note">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <p>
+            Los metadatos comunes (<strong>categoría</strong> y <strong>área</strong>) se aplican a todos los archivos del lote.
+            Cada archivo conserva su propio título, editable arriba.
+          </p>
+        </div>
+
+        <div class="field-row">
+
+          <!-- Categoría -->
+          <div class="field">
+            <label class="field__label" id="batch-category-label">
+              Categoría
+              <strong class="field__required" aria-hidden="true">*</strong>
+            </label>
+            <mat-form-field class="mat-select-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matPrefix class="select-icon">sell</mat-icon>
+              <mat-select
+                formControlName="categoryId"
+                aria-labelledby="batch-category-label"
+                aria-describedby="batch-category-error batch-category-hint"
+                [placeholder]="categoriesLoading() ? 'Cargando categorías...' : 'Seleccione una categoría'"
+              >
+                @for (cat of categories(); track cat.id) {
+                  <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            @if (categoriesLoadError()) {
+              <div class="categories-error">
+                <mat-icon aria-hidden="true">warning</mat-icon>
+                <span>No se pudieron cargar las categorías.</span>
+                <button type="button" class="categories-retry" (click)="loadCategories()">
+                  Reintentar
+                </button>
+              </div>
+            }
+
+            @if (categoryError(); as msg) {
+              <p class="field__error" id="batch-category-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                {{ msg }}
+              </p>
+            }
+          </div>
+
+          <!-- Área responsable -->
+          <div class="field">
+            <label class="field__label" id="batch-area-label">
+              Área responsable
+              <strong class="field__required" aria-hidden="true">*</strong>
+            </label>
+            <mat-form-field class="mat-select-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matPrefix class="select-icon">apartment</mat-icon>
+              <mat-select
+                formControlName="responsibleArea"
+                aria-labelledby="batch-area-label"
+                aria-describedby="batch-area-error"
+                placeholder="Seleccione un área"
+              >
+                @for (area of areas; track area) {
+                  <mat-option [value]="area">{{ area }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            @if (areaError(); as msg) {
+              <p class="field__error" id="batch-area-error">
+                <mat-icon aria-hidden="true">error</mat-icon>
+                {{ msg }}
+              </p>
+            }
+          </div>
+
+        </div>
+      }
+
+    </div><!-- /dialog-fields -->
+
+    <div class="dialog-footer">
+      @if (phase() === 'compose') {
+        <app-button variant="secondary" type="button" (click)="cancel()">
+          <span>Cancelar</span>
+        </app-button>
+        <app-button variant="primary" type="submit" [disabled]="!canSubmit()">
+          <mat-icon aria-hidden="true">upload_file</mat-icon>
+          <span>
+            Cargar
+            {{ files().length }} {{ files().length === 1 ? 'archivo' : 'archivos' }}
+          </span>
+        </app-button>
+      } @else if (phase() === 'uploading') {
+        <app-button variant="primary" [loading]="true">
+          <mat-icon aria-hidden="true">upload_file</mat-icon>
+          <span>Subiendo...</span>
+        </app-button>
+      } @else {
+        <app-button variant="primary" type="button" (click)="close()">
+          <mat-icon aria-hidden="true">check</mat-icon>
+          <span>Cerrar</span>
+        </app-button>
+      }
+    </div>
+
+  </form>
+
+</div>

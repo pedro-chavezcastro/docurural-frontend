@@ -16,6 +16,11 @@ import {
   UploadDocumentDialogData,
   UploadDocumentDialogResult,
 } from './components/upload-document-dialog/upload-document-dialog.component';
+import {
+  UploadDocumentsBatchDialogComponent,
+  UploadDocumentsBatchDialogData,
+  UploadDocumentsBatchDialogResult,
+} from './components/upload-documents-batch-dialog/upload-documents-batch-dialog.component';
 import { DocumentFormatIconComponent } from './components/document-format-icon.component';
 import { DocumentCategoryPillComponent } from './components/document-category-pill.component';
 import { DocumentRowActionsComponent } from './components/document-row-actions.component';
@@ -42,7 +47,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
   { value: 'documentDateAsc',  label: 'Fecha doc. más antigua',  sortBy: 'documentDate', sortDir: 'asc'  },
 ];
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-document-list',
@@ -223,7 +228,24 @@ export class DocumentListComponent {
   }
 
   protected onUploadBatch(): void {
-    this.notifications.info('Próximamente', 'La carga múltiple de documentos se implementará en la HU-10.');
+    if (!this.canUpload()) return;
+    const ref = this.dialog.open<
+      UploadDocumentsBatchDialogComponent,
+      UploadDocumentsBatchDialogData,
+      UploadDocumentsBatchDialogResult
+    >(UploadDocumentsBatchDialogComponent, {
+      data: {},
+      width: '720px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'uploaded' && result.uploadedCount > 0) {
+        this.selectedSort.set('createdAtDesc');
+        this.currentPage.set(1);
+        this.loadDocuments();
+      }
+    });
   }
 
   protected formatDocumentDate(iso: string): string {
