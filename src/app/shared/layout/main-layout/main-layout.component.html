@@ -26,11 +26,10 @@
         <mat-icon>dashboard</mat-icon>
         <span class="sb-nav__label">Dashboard</span>
       </a>
-      <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
+      <a class="sb-nav__item" routerLink="/documents" routerLinkActive="sb-nav__item--active" [routerLinkActiveOptions]="{ exact: false }" (click)="sidebarOpen.set(false)">
         <mat-icon>description</mat-icon>
         <span class="sb-nav__label">Documentos</span>
-        <span class="sb-badge">Sprint 2</span>
-      </button>
+      </a>
       <button class="sb-nav__item sb-nav__item--disabled" type="button" disabled>
         <mat-icon>search</mat-icon>
         <span class="sb-nav__label">Buscar</span>

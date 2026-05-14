@@ -29,6 +29,14 @@ export const routes: Routes = [
         title: 'Usuarios — DocuRural',
       },
       {
+        path: 'documents',
+        loadComponent: () =>
+          import('./features/documents/document-list/document-list.component').then(
+            (m) => m.DocumentListComponent,
+          ),
+        title: 'Documentos — DocuRural',
+      },
+      {
         path: 'categories',
         canActivate: [roleGuard(['ADMIN'])],
         loadComponent: () =>

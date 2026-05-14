@@ -1,0 +1,266 @@
+<!-- Cabecera de página -->
+<app-page-header
+  kicker="Repositorio"
+  title="Documentos"
+  subtitle="Consulte, descargue y gestione los documentos institucionales."
+>
+  @if (canUpload()) {
+    <div actions class="header-actions">
+      <app-button class="header-action-batch" variant="secondary" (click)="onUploadBatch()">
+        <mat-icon>upload_file</mat-icon>
+        <span>Carga múltiple</span>
+      </app-button>
+      <app-button class="header-action-upload" variant="primary" (click)="onUploadSingle()">
+        <mat-icon>add</mat-icon>
+        <span>Subir documento</span>
+      </app-button>
+    </div>
+  }
+</app-page-header>
+
+<!-- Action bar: contador + ordenamiento -->
+<div class="action-bar" [class.action-bar--disabled]="!loading() && totalDocuments() === 0">
+  <span class="counter">
+    <mat-icon aria-hidden="true">description</mat-icon>
+    <strong>{{ totalDocuments() }} {{ totalDocuments() === 1 ? 'documento' : 'documentos' }}</strong>
+  </span>
+
+  <button
+    type="button"
+    class="sort-trigger"
+    [matMenuTriggerFor]="sortMenu"
+    [disabled]="!loading() && totalDocuments() === 0"
+    aria-label="Ordenar listado"
+  >
+    <mat-icon class="sort-trigger__icon" aria-hidden="true">swap_vert</mat-icon>
+    <span class="sort-trigger__label">
+      <span class="sort-trigger__prefix">Ordenar:</span>
+      {{ currentSortLabel() }}
+    </span>
+    <mat-icon class="sort-trigger__chevron" aria-hidden="true">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #sortMenu="matMenu" panelClass="sort-menu" xPosition="before">
+    @for (opt of sortOptions; track opt.value) {
+      <button
+        type="button"
+        mat-menu-item
+        [class.sort-menu__item--active]="selectedSort() === opt.value"
+        (click)="onSortChange(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </mat-menu>
+</div>
+
+<!-- State machine principal -->
+@if (loading()) {
+  <app-empty-state variant="loading">Cargando documentos…</app-empty-state>
+} @else if (isEmpty()) {
+  <app-empty-state
+    variant="empty"
+    icon="cloud_upload"
+    title="No hay documentos en el repositorio"
+    description="Comience cargando el primer documento. Los archivos PDF, DOCX, XLSX, JPG y PNG son compatibles, hasta 10 MB cada uno."
+  >
+    @if (canUpload()) {
+      <div actions class="empty-actions">
+        <app-button variant="secondary" (click)="onUploadBatch()">
+          <mat-icon>upload_file</mat-icon>
+          <span>Carga múltiple</span>
+        </app-button>
+        <app-button variant="primary" (click)="onUploadSingle()">
+          <mat-icon>add</mat-icon>
+          <span>Subir documento</span>
+        </app-button>
+      </div>
+    }
+  </app-empty-state>
+} @else {
+
+  <!-- ── Tabla desktop (≥ 768 px) ──────────────────────────────────── -->
+  <div class="docs-table desktop-only">
+    <table>
+      <colgroup>
+        <col class="col-title" />
+        <col class="col-category" />
+        <col class="col-area" />
+        <col class="col-date" />
+        <col class="col-size" />
+        <col class="col-uploaded-by" />
+        <col class="col-actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Categoría</th>
+          <th>Área responsable</th>
+          <th>Fecha doc.</th>
+          <th class="th-right">Tamaño</th>
+          <th>Subido por</th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (doc of documents(); track trackById($index, doc)) {
+          <tr>
+            <td>
+              <div class="cell-title">
+                <app-document-format-icon [format]="doc.fileFormat" />
+                <div class="cell-title__info">
+                  <span class="cell-title__name">{{ doc.title }}</span>
+                  <span class="cell-title__meta">Cargado el {{ formatCreatedAt(doc.createdAt) }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <app-document-category-pill [name]="doc.category" />
+            </td>
+            <td class="cell-area">{{ doc.responsibleArea }}</td>
+            <td class="cell-date">{{ formatDocumentDate(doc.documentDate) }}</td>
+            <td class="cell-size td-right">{{ formatSize(doc.fileSizeBytes) }}</td>
+            <td>
+              <div class="cell-uploader">
+                <div class="cell-uploader__avatar" aria-hidden="true">
+                  {{ userInitials(doc.uploadedBy) }}
+                </div>
+                <span class="cell-uploader__name">{{ doc.uploadedBy }}</span>
+              </div>
+            </td>
+            <td class="cell-actions">
+              <app-document-row-actions
+                [doc]="doc"
+                [role]="role()"
+                [currentUserName]="currentUser()?.fullName ?? ''"
+                (view)="onView($event)"
+                (download)="onDownload($event)"
+                (edit)="onEdit($event)"
+                (delete)="onDelete($event)"
+              />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Tarjetas mobile (< 768 px) ────────────────────────────────── -->
+  <div class="doc-cards mobile-only">
+    @for (doc of documents(); track trackById($index, doc)) {
+      <div class="doc-card">
+        <div class="doc-card__top">
+          <app-document-format-icon [format]="doc.fileFormat" />
+          <div class="doc-card__info">
+            <span class="doc-card__title">{{ doc.title }}</span>
+            <app-document-category-pill [name]="doc.category" />
+          </div>
+        </div>
+        <div class="doc-card__meta">
+          <span class="doc-card__meta-item">
+            <mat-icon aria-hidden="true">business</mat-icon>
+            {{ doc.responsibleArea }}
+          </span>
+          <span class="doc-card__meta-item">
+            <mat-icon aria-hidden="true">calendar_today</mat-icon>
+            {{ formatDocumentDate(doc.documentDate) }}
+          </span>
+          <span class="doc-card__meta-item">
+            <mat-icon aria-hidden="true">data_usage</mat-icon>
+            {{ formatSize(doc.fileSizeBytes) }}
+          </span>
+        </div>
+        <div class="doc-card__actions">
+          <app-button variant="primary" [fullWidth]="true" (click)="onView(doc)">
+            <mat-icon>visibility</mat-icon>
+            <span>Ver</span>
+          </app-button>
+          <app-icon-button tooltip="Descargar" ariaLabel="Descargar documento" (click)="onDownload(doc)">
+            <mat-icon>download</mat-icon>
+          </app-icon-button>
+          @if (role() === 'ADMIN' || (role() === 'EDITOR' && doc.uploadedBy === (currentUser()?.fullName ?? ''))) {
+            <button
+              type="button"
+              class="more-btn"
+              [matMenuTriggerFor]="moreMenu"
+              aria-label="Más opciones"
+            >
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #moreMenu="matMenu">
+              <button mat-menu-item (click)="onEdit(doc)">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              @if (role() === 'ADMIN') {
+                <button mat-menu-item class="menu-item--danger" (click)="onDelete(doc)">
+                  <mat-icon>delete_outline</mat-icon>
+                  <span>Eliminar</span>
+                </button>
+              }
+            </mat-menu>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ── Paginación ─────────────────────────────────────────────────── -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <span class="pagination__info">{{ pageRangeLabel() }}</span>
+      <div class="pagination__controls">
+        <app-icon-button
+          tooltip="Primera página"
+          ariaLabel="Ir a la primera página"
+          [disabled]="currentPage() === 1"
+          (click)="goToFirst()"
+        >
+          <mat-icon>first_page</mat-icon>
+        </app-icon-button>
+        <app-icon-button
+          tooltip="Página anterior"
+          ariaLabel="Ir a la página anterior"
+          [disabled]="currentPage() === 1"
+          (click)="goToPrev()"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </app-icon-button>
+
+        @for (page of pageNumbers(); track $index) {
+          @if (page === null) {
+            <span class="pagination__ellipsis" aria-hidden="true">…</span>
+          } @else {
+            <button
+              type="button"
+              class="pagination__page"
+              [class.pagination__page--active]="currentPage() === page"
+              [attr.aria-current]="currentPage() === page ? 'page' : null"
+              [attr.aria-label]="'Página ' + page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+        }
+
+        <app-icon-button
+          tooltip="Página siguiente"
+          ariaLabel="Ir a la página siguiente"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToNext()"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </app-icon-button>
+        <app-icon-button
+          tooltip="Última página"
+          ariaLabel="Ir a la última página"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToLast()"
+        >
+          <mat-icon>last_page</mat-icon>
+        </app-icon-button>
+      </div>
+    </div>
+  }
+}
