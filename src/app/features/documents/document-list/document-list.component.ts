@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,6 +13,12 @@ import { DocumentSortBy, DocumentSortDir } from '../../../core/models/document-l
 import { ApiError } from '../../../core/models/api-error.model';
 import { canUploadDocument } from './utils/document-permissions';
 import { formatFileSize } from './utils/file-size';
+import {
+  buildFallbackFilename,
+  parseBlobError,
+  parseFilenameFromContentDisposition,
+  triggerBlobDownload,
+} from './utils/download-blob';
 import {
   UploadDocumentDialogComponent,
   UploadDocumentDialogData,
@@ -58,6 +65,7 @@ const PAGE_SIZE = 10;
     MatDialogModule,
     MatIconModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
     DocumentFormatIconComponent,
     DocumentCategoryPillComponent,
     DocumentRowActionsComponent,
@@ -76,12 +84,13 @@ export class DocumentListComponent {
   private readonly dialog           = inject(MatDialog);
   private readonly router           = inject(Router);
 
-  protected readonly loading        = signal(false);
-  protected readonly documents      = signal<Document[]>([]);
-  protected readonly totalDocuments = signal(0);
-  protected readonly totalPages     = signal(0);
-  protected readonly currentPage    = signal(1);
-  protected readonly selectedSort   = signal<SortOption>('createdAtDesc');
+  protected readonly loading          = signal(false);
+  protected readonly documents        = signal<Document[]>([]);
+  protected readonly totalDocuments   = signal(0);
+  protected readonly totalPages       = signal(0);
+  protected readonly currentPage      = signal(1);
+  protected readonly selectedSort     = signal<SortOption>('createdAtDesc');
+  protected readonly downloadingIds   = signal(new Set<number>());
 
   protected readonly sortOptions      = SORT_OPTIONS;
   protected readonly currentSortLabel = computed(() => this.currentSortConfig().label);
@@ -197,7 +206,35 @@ export class DocumentListComponent {
   }
 
   protected onDownload(doc: Document): void {
-    this.notifications.info('Próximamente', `La descarga de "${doc.title}" se implementará en la HU-12.`);
+    this.downloadingIds.update((ids) => new Set(ids).add(doc.id));
+
+    this.documentsService.download(doc.id).subscribe({
+      next: (response) => {
+        const filename =
+          parseFilenameFromContentDisposition(response.headers.get('Content-Disposition')) ??
+          buildFallbackFilename(doc.title, doc.fileFormat);
+        triggerBlobDownload(response.body!, filename);
+        this.notifications.success('Descarga iniciada', filename);
+        this.downloadingIds.update((ids) => { const next = new Set(ids); next.delete(doc.id); return next; });
+      },
+      error: async (err: HttpErrorResponse) => {
+        this.downloadingIds.update((ids) => { const next = new Set(ids); next.delete(doc.id); return next; });
+        if (err.status === 401) return;
+        if (err.status === 404) {
+          const apiError = await parseBlobError(err);
+          this.notifications.error(
+            'No se pudo descargar el documento',
+            apiError?.message ?? 'El archivo no está disponible. Contacte al administrador.',
+          );
+          return;
+        }
+        const apiError = await parseBlobError(err);
+        this.notifications.error(
+          'No se pudo descargar el documento',
+          apiError?.message ?? 'Verifique su conexión e intente nuevamente.',
+        );
+      },
+    });
   }
 
   protected onEdit(doc: Document): void {

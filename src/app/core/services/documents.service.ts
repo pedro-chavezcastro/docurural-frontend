@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
@@ -50,5 +50,15 @@ export class DocumentsService {
     return this.http.get(`${environment.apiBaseUrl}/documents/${id}/view`, { responseType: 'blob' });
   }
 
-  // download, update, delete — se implementarán en HU-12, HU-13, HU-14
+  /** DOC-08: descarga el archivo forzando Content-Disposition: attachment.
+   *  Retorna la respuesta completa para que el caller pueda leer el header Content-Disposition
+   *  y extraer el nombre original del archivo. */
+  download(id: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${environment.apiBaseUrl}/documents/${id}/download`, {
+      responseType: 'blob',
+      observe: 'response',
+    });
+  }
+
+  // update, delete — se implementarán en HU-13, HU-14
 }

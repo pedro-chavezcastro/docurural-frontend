@@ -12,12 +12,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DocumentDetailResponse, isPreviewableFormat } from '../../../core/models/document-detail.model';
 import { DOCUMENT_FORMAT_LABELS } from '../../../core/models/document-format.model';
 import { ApiError } from '../../../core/models/api-error.model';
 import { formatFileSize } from '../document-list/utils/file-size';
+import {
+  parseBlobError,
+  parseFilenameFromContentDisposition,
+  triggerBlobDownload,
+} from '../document-list/utils/download-blob';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -33,6 +39,7 @@ type ErrorKind = 'not-found' | 'file-missing' | 'network';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatIconModule,
+    MatProgressSpinnerModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ButtonComponent,
@@ -54,6 +61,7 @@ export class DocumentDetailComponent implements OnDestroy {
 
   protected readonly loadingMetadata = signal(true);
   protected readonly loadingBlob     = signal(false);
+  protected readonly downloading     = signal(false);
   protected readonly metadata        = signal<DocumentDetailResponse | null>(null);
   protected readonly objectUrl       = signal<string | null>(null);
   protected readonly errorKind       = signal<ErrorKind | null>(null);
@@ -103,7 +111,37 @@ export class DocumentDetailComponent implements OnDestroy {
   }
 
   protected onDownload(): void {
-    this.notifications.info('Próximamente', 'La descarga de documentos se implementará en la HU-12.');
+    const meta = this.metadata();
+    if (!meta || this.downloading()) return;
+
+    this.downloading.set(true);
+    this.docService.download(meta.id).subscribe({
+      next: (response) => {
+        const filename =
+          parseFilenameFromContentDisposition(response.headers.get('Content-Disposition')) ??
+          meta.originalFileName;
+        triggerBlobDownload(response.body!, filename);
+        this.notifications.success('Descarga iniciada', filename);
+        this.downloading.set(false);
+      },
+      error: async (err: HttpErrorResponse) => {
+        this.downloading.set(false);
+        if (err.status === 401) return;
+        if (err.status === 404) {
+          const apiError = await parseBlobError(err);
+          this.notifications.error(
+            'No se pudo descargar el documento',
+            apiError?.message ?? 'El archivo no está disponible. Contacte al administrador.',
+          );
+          return;
+        }
+        const apiError = await parseBlobError(err);
+        this.notifications.error(
+          'No se pudo descargar el documento',
+          apiError?.message ?? 'Verifique su conexión e intente nuevamente.',
+        );
+      },
+    });
   }
 
   protected zoomIn(): void {

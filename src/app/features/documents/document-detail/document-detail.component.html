@@ -4,14 +4,18 @@
   [title]="metadata()?.title ?? 'Cargando documento…'"
 >
   <div actions class="header-actions">
-    <app-button variant="secondary" (click)="onBack()">
-      <mat-icon>arrow_back</mat-icon>
-      <span>Volver al listado</span>
+    <app-button class="header-actions-buttons" variant="secondary" (click)="onBack()">
+      <span>Volver</span>
     </app-button>
     @if (metadata() && !loadingBlob()) {
-      <app-button variant="primary" (click)="onDownload()">
+      <app-button
+        class="header-actions-buttons"
+        variant="primary"
+        [loading]="downloading()"
+        (click)="onDownload()"
+      >
         <mat-icon>download</mat-icon>
-        <span>Descargar</span>
+        <span>{{ downloading() ? 'Descargando…' : 'Descargar' }}</span>
       </app-button>
     }
   </div>
@@ -31,8 +35,7 @@
   >
     <div actions>
       <app-button variant="secondary" (click)="onBack()">
-        <mat-icon>arrow_back</mat-icon>
-        <span>Volver al listado</span>
+        <span>Volver</span>
       </app-button>
     </div>
   </app-empty-state>
@@ -122,9 +125,9 @@
           [description]="'Los archivos ' + formatLabel() + ' se pueden descargar pero no se previsualizan en el navegador.'"
         >
           <div actions>
-            <app-button variant="primary" (click)="onDownload()">
+            <app-button variant="primary" [loading]="downloading()" (click)="onDownload()">
               <mat-icon>download</mat-icon>
-              <span>Descargar para ver</span>
+              <span>{{ downloading() ? 'Descargando…' : 'Descargar para ver' }}</span>
             </app-button>
           </div>
         </app-empty-state>

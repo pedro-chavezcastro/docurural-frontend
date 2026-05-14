@@ -133,6 +133,7 @@
                 [doc]="doc"
                 [role]="role()"
                 [currentUserName]="currentUser()?.fullName ?? ''"
+                [downloading]="downloadingIds().has(doc.id)"
                 (view)="onView($event)"
                 (download)="onDownload($event)"
                 (edit)="onEdit($event)"
@@ -175,8 +176,17 @@
             <mat-icon>visibility</mat-icon>
             <span>Ver</span>
           </app-button>
-          <app-icon-button tooltip="Descargar" ariaLabel="Descargar documento" (click)="onDownload(doc)">
-            <mat-icon>download</mat-icon>
+          <app-icon-button
+            [tooltip]="downloadingIds().has(doc.id) ? 'Descargando…' : 'Descargar'"
+            [ariaLabel]="downloadingIds().has(doc.id) ? 'Descargando documento ' + doc.title : 'Descargar documento ' + doc.title"
+            [disabled]="downloadingIds().has(doc.id)"
+            (click)="onDownload(doc)"
+          >
+            @if (downloadingIds().has(doc.id)) {
+              <mat-progress-spinner diameter="18" mode="indeterminate" />
+            } @else {
+              <mat-icon>download</mat-icon>
+            }
           </app-icon-button>
           @if (role() === 'ADMIN' || (role() === 'EDITOR' && doc.uploadedBy === (currentUser()?.fullName ?? ''))) {
             <button
