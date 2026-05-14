@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { DocumentsService } from '../../../core/services/documents.service';
@@ -10,6 +11,11 @@ import { DocumentSortBy, DocumentSortDir } from '../../../core/models/document-l
 import { ApiError } from '../../../core/models/api-error.model';
 import { canUploadDocument } from './utils/document-permissions';
 import { formatFileSize } from './utils/file-size';
+import {
+  UploadDocumentDialogComponent,
+  UploadDocumentDialogData,
+  UploadDocumentDialogResult,
+} from './components/upload-document-dialog/upload-document-dialog.component';
 import { DocumentFormatIconComponent } from './components/document-format-icon.component';
 import { DocumentCategoryPillComponent } from './components/document-category-pill.component';
 import { DocumentRowActionsComponent } from './components/document-row-actions.component';
@@ -43,6 +49,7 @@ const PAGE_SIZE = 20;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    MatDialogModule,
     MatIconModule,
     MatMenuModule,
     DocumentFormatIconComponent,
@@ -60,6 +67,7 @@ export class DocumentListComponent {
   private readonly documentsService = inject(DocumentsService);
   private readonly notifications    = inject(NotificationService);
   private readonly auth             = inject(AuthService);
+  private readonly dialog           = inject(MatDialog);
 
   protected readonly loading        = signal(false);
   protected readonly documents      = signal<Document[]>([]);
@@ -194,7 +202,24 @@ export class DocumentListComponent {
   }
 
   protected onUploadSingle(): void {
-    this.notifications.info('Próximamente', 'La carga de documentos se implementará en la HU-09.');
+    if (!this.canUpload()) return;
+    const ref = this.dialog.open<
+      UploadDocumentDialogComponent,
+      UploadDocumentDialogData,
+      UploadDocumentDialogResult
+    >(UploadDocumentDialogComponent, {
+      data: {},
+      width: '620px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'uploaded') {
+        this.selectedSort.set('createdAtDesc');
+        this.currentPage.set(1);
+        this.loadDocuments();
+      }
+    });
   }
 
   protected onUploadBatch(): void {

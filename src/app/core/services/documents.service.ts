@@ -6,6 +6,7 @@ import {
   DocumentListParams,
   DocumentListResponse,
 } from '../models/document-list.models';
+import { UploadDocumentResponse } from '../models/upload-document.models';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -20,6 +21,13 @@ export class DocumentsService {
     return this.http.get<DocumentListResponse>(`${environment.apiBaseUrl}/documents`, {
       params: httpParams,
     });
+  }
+
+  create(formData: FormData): Observable<UploadDocumentResponse> {
+    return this.http.post<UploadDocumentResponse>(
+      `${environment.apiBaseUrl}/documents`,
+      formData,
+    );
   }
 
   // view, download, update, delete — se implementarán en HU-11, HU-12, HU-13, HU-14
