@@ -34,6 +34,7 @@ import {
 } from '../../../../../core/models/upload-document.models';
 import { formatFileSize } from '../../utils/file-size';
 import { BatchFileItem, BatchFileStatus } from './batch-file-item.model';
+import { v4 as uuidv4 } from 'uuid';
 
 export type UploadDocumentsBatchDialogData = Record<string, never>;
 
@@ -149,7 +150,7 @@ export class UploadDocumentsBatchDialogComponent implements OnInit {
         continue;
       }
       valid.push({
-        id:           crypto.randomUUID(),
+        id:           uuidv4(),
         file,
         title:        file.name.replace(/\.[^.]+$/, '').slice(0, MAX_TITLE_LENGTH),
         status:       'pending',

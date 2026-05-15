@@ -4,6 +4,16 @@
 // Ver src/styles/README.md.
 @use './styles/tokens';
 
+// Overrides globales de Angular Material (mat-select, dialog, toast, sort-menu).
+@use './styles/material-overrides';
+
+// Estilos compartidos de formularios, dialogs, dropzone y vistas de listado.
+@use './styles/form-field';
+@use './styles/dialog-shell';
+@use './styles/dropzone';
+@use './styles/list-view';
+@use './styles/confirmation-dialog';
+
 // ─── Tema Angular Material ──────────────────────────────────────────────────
 // El proyecto mantiene su propio sistema visual basado en --color-* (azul
 // institucional #2E6DA4). El mat.theme() siguiente sólo se usa para que los
@@ -49,37 +59,3 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// ─── Toast personalizado (NotificationService) ──────────────────────────────
-.mat-mdc-snack-bar-container.docu-toast-panel {
-  --mdc-snackbar-container-color: transparent;
-  --mat-snack-bar-button-color: transparent;
-  --mdc-snackbar-supporting-text-color: inherit;
-
-  margin: var(--space-4);
-
-  .mdc-snackbar__surface {
-    background: transparent;
-    box-shadow: var(--shadow-card);
-    padding: 0;
-    min-width: 0;
-  }
-
-  .mdc-snackbar__label {
-    padding: 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .mat-mdc-snack-bar-container.docu-toast-panel {
-    margin: var(--space-3);
-  }
-}
-
-// ─── Menú de ordenamiento (panelClass="sort-menu") ──────────────────────────
-// La regla vive aquí porque mat-menu renderiza el panel en un overlay fuera
-// del árbol de componentes; usar panelClass es el patrón recomendado sobre ::ng-deep.
-.sort-menu .sort-menu__item--active {
-  color: var(--color-primary);
-  font-weight: 600;
-  background: var(--color-primary-light);
-}

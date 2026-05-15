@@ -24,6 +24,7 @@ import { UserRowActionsComponent } from './components/user-row-actions.component
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { SortTriggerComponent } from '../../../shared/components/sort-trigger/sort-trigger.component';
 
 type SortOption = 'fullNameAsc' | 'fullNameDesc' | 'createdAtDesc' | 'createdAtAsc';
 
@@ -57,6 +58,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
     PageHeaderComponent,
     EmptyStateComponent,
     ButtonComponent,
+    SortTriggerComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',

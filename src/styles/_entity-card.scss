@@ -1,0 +1,15 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Entity Card — mixin base para tarjetas móvil de entidades (usuario,
+// categoría, documento). Cada list view aplica la clase semántica propia.
+// Uso: @use 'entity-card' as ec;  →  .my-card { @include ec.base(); }
+// ─────────────────────────────────────────────────────────────────────────────
+
+@mixin base {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-divider);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

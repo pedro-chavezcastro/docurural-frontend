@@ -1,0 +1,139 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Angular Material — Overrides globales
+//
+// Aquí viven los overrides de Material que afectan a múltiples componentes o
+// que se aplican en overlays fuera del árbol (mat-menu, mat-snackbar).
+// NO usar ::ng-deep. Los overrides por CSS custom properties son preferidos;
+// los selectores de clase globales se usan solo cuando los tokens no alcanzan.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── mat-select con apariencia del sistema de diseño ──────────────────────────
+// Aplicar la clase .mat-select-field al mat-form-field en el template.
+.mat-select-field {
+  width: 100%;
+
+  // Forma y borde
+  --mdc-outlined-text-field-container-shape: var(--radius-md);
+  --mdc-outlined-text-field-outline-color: var(--color-border);
+  --mdc-outlined-text-field-hover-outline-color: var(--color-border-strong);
+  --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+  --mdc-outlined-text-field-focus-outline-width: 1px;
+
+  // Estados de error
+  --mdc-outlined-text-field-error-outline-color: var(--color-error);
+  --mdc-outlined-text-field-error-focus-outline-color: var(--color-error);
+  --mdc-outlined-text-field-error-hover-outline-color: var(--color-error);
+
+  // Tipografía del trigger
+  --mat-select-trigger-text-font: var(--font-sans);
+  --mat-select-trigger-text-size: var(--text-base);
+  --mat-select-enabled-trigger-text-color: var(--color-text-primary);
+  --mat-select-placeholder-text-color: var(--color-text-muted);
+  --mat-select-disabled-trigger-text-color: var(--color-text-muted);
+
+  // Flecha
+  --mat-select-enabled-arrow-color: var(--color-text-secondary);
+  --mat-select-focused-arrow-color: var(--color-primary);
+  --mat-select-invalid-arrow-color: var(--color-error);
+
+  // Panel de opciones
+  --mat-select-panel-background-color: var(--color-bg-card);
+  --mat-option-label-text-font: var(--font-sans);
+  --mat-option-label-text-size: var(--text-base);
+  --mat-option-selected-state-label-text-color: var(--color-primary);
+  --mat-option-hover-state-layer-color: var(--color-bg-hover);
+
+  // Altura — alineada con los demás inputs del formulario
+  --mat-form-field-container-height: 48px;
+  --mat-form-field-container-vertical-padding: 12px;
+
+  // Fondo e internos del MDC (los tokens de arriba no cubren background en M3)
+  .mdc-text-field--outlined {
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-md);
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: var(--color-border);
+    border-width: 1px;
+  }
+
+  .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--disabled):hover {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-border-strong);
+    }
+  }
+
+  .mdc-text-field--focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-primary);
+      border-width: 2px;
+    }
+  }
+
+  .mat-mdc-form-field.mat-form-field-invalid {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-error);
+    }
+  }
+}
+
+// Icono prefix del mat-select (proyectado vía matPrefix, sin ng-deep)
+.select-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-secondary);
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+// ── Dialogs con padding gestionado por el componente ─────────────────────────
+// Aplicar la clase .dialog-flush al mat-dialog-container en panelClass.
+.dialog-flush {
+  --mat-dialog-headline-padding: 0;
+  --mat-dialog-with-actions-content-padding: 0;
+  --mat-dialog-actions-padding: 0;
+}
+
+// ── Toast personalizado (NotificationService) ─────────────────────────────────
+.mat-mdc-snack-bar-container.docu-toast-panel {
+  --mdc-snackbar-container-color: transparent;
+  --mat-snack-bar-button-color: transparent;
+  --mdc-snackbar-supporting-text-color: inherit;
+
+  margin: var(--space-4);
+
+  .mdc-snackbar__surface {
+    background: transparent;
+    box-shadow: var(--shadow-card);
+    padding: 0;
+    min-width: 0;
+  }
+
+  .mdc-snackbar__label {
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .mat-mdc-snack-bar-container.docu-toast-panel {
+    margin: var(--space-3);
+  }
+}
+
+// ── Menú de ordenamiento (panelClass="sort-menu") ─────────────────────────────
+// mat-menu renderiza el panel en un overlay fuera del árbol de componentes.
+.sort-menu .sort-menu__item--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background: var(--color-primary-light);
+}

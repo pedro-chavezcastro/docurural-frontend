@@ -3,12 +3,12 @@
   align-items: center;
   gap: 6px;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: var(--text-xs);
   font-weight: 500;
   padding: 3px 10px;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   white-space: nowrap;
-  line-height: 1.4;
+  line-height: var(--lh-snug);
 }
 
 .role-badge__dot {
@@ -19,22 +19,22 @@
 }
 
 .role-badge--admin {
-  background: #EBF3FB;
-  color: #1E4F7A;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
 
-  .role-badge__dot { background: #2E6DA4; }
+  .role-badge__dot { background: var(--color-primary); }
 }
 
 .role-badge--editor {
-  background: #E6F4E7;
-  color: #276B2B;
+  background: var(--color-success-light);
+  color: var(--color-success-text);
 
-  .role-badge__dot { background: #3A8A3F; }
+  .role-badge__dot { background: var(--color-success); }
 }
 
 .role-badge--reader {
-  background: #EEF1F4;
-  color: #4A5A6E;
+  background: var(--color-neutral-light);
+  color: var(--color-neutral);
 
-  .role-badge__dot { background: #8898AB; }
+  .role-badge__dot { background: var(--color-neutral-accent); }
 }

@@ -24,6 +24,7 @@ import { CategoryRowActionsComponent } from './components/category-row-actions.c
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { SortTriggerComponent } from '../../../shared/components/sort-trigger/sort-trigger.component';
 
 type SortOption = 'nameAsc' | 'nameDesc' | 'createdAtDesc' | 'createdAtAsc';
 
@@ -55,6 +56,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
     PageHeaderComponent,
     EmptyStateComponent,
     ButtonComponent,
+    SortTriggerComponent,
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss',

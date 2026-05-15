@@ -1,13 +1,46 @@
-# Sistema de tokens · DocuRural
+# Sistema de estilos · DocuRural
 
-Esta carpeta contiene los **tokens de diseño** (CSS custom properties) que usan
-los componentes del proyecto. La fuente única de verdad es `_tokens.scss`,
-importado desde `src/styles.scss`.
+Esta carpeta contiene los **tokens de diseño** y los **partials globales**
+que usan los componentes del proyecto. `src/styles.scss` los carga todos.
 
 > Regla de oro: **no usar literales** (`#fff`, `12px`, `8px`, etc.) en los SCSS
 > de componente cuando exista un token equivalente. Si un valor no encaja con
 > ningún token, primero considera ajustarlo al token más cercano; si no es
 > posible, propone añadir un token nuevo.
+
+---
+
+## Partials globales
+
+Cada partial es CSS puro (sin mixin) cargado globalmente desde `styles.scss`.
+Los componentes no necesitan `@use` ni `@include` para usarlos.
+
+| Archivo                      | Contenido                                                             |
+|------------------------------|-----------------------------------------------------------------------|
+| `_tokens.scss`               | CSS custom properties: color, tipografía, espaciado, radius, sombras |
+| `_material-overrides.scss`   | `.mat-select-field`, `.dialog-flush`, toast panel, sort-menu overlay  |
+| `_form-field.scss`           | `.field`, `.field__*` BEM — inputs, selects, textareas, labels        |
+| `_dialog-shell.scss`         | `.dialog-container/header/title/close/alert/form/fields/footer`       |
+| `_dropzone.scss`             | `.dropzone` + modificadores `--dragover/filled/error` + subclases     |
+| `_confirmation-dialog.scss`  | `.dialog` shell para dialogs de confirmación con div personalizado     |
+| `_list-view.scss`            | `.action-bar`, `.sort-trigger`, `.counter`, `.desktop/mobile-only`    |
+
+### Mixins por archivo (requieren `@use`)
+
+| Archivo             | Mixin         | Uso                                      |
+|---------------------|---------------|------------------------------------------|
+| `_breakpoints.scss` | `md`, `sm`    | `@media (max-width: 768px / 600px)`      |
+| `_utils.scss`       | `truncate-1`, `clamp-lines($n)`, `focus-ring` | Utilidades CSS comunes |
+| `_data-table.scss`  | `styles`      | Shell de tabla (thead, tbody, td)        |
+| `_entity-card.scss` | `base`        | Card base para listas móviles            |
+
+### Componente Angular compartido
+
+| Selector             | Ruta                                           | Propósito                   |
+|----------------------|------------------------------------------------|-----------------------------|
+| `<app-sort-trigger>` | `shared/components/sort-trigger/`              | Botón de ordenamiento + menú |
+
+---
 
 ---
 
@@ -71,9 +104,6 @@ Usar **siempre** los overlays / fg semánticos en lugar de `rgba(255,255,255,X)`
 
 > **No reducir el cuerpo por debajo de `--text-base` (16 px)** — es un
 > requerimiento de a11y declarado en `CLAUDE.md §UI`.
->
-> Si encuentras `15px` o `22px` en el código, son valores legacy a normalizar
-> en la migración (Fase 3) hacia el token más cercano (16/20 o 24).
 
 ---
 
@@ -158,4 +188,3 @@ el azul institucional sin necesidad de overrides puntuales.
 1. Verifica que **no existe** un token equivalente.
 2. Añádelo en `_tokens.scss` dentro del bloque temático correspondiente.
 3. Documéntalo en este README en la tabla pertinente.
-4. Si reemplaza un literal repetido, abre tarea de migración en Fase 3.

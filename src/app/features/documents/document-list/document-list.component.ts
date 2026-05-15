@@ -46,6 +46,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { IconButtonComponent } from '../../../shared/components/icon-button/icon-button.component';
+import { SortTriggerComponent } from '../../../shared/components/sort-trigger/sort-trigger.component';
 
 type SortOption = 'createdAtDesc' | 'createdAtAsc' | 'titleAsc' | 'titleDesc' | 'documentDateDesc' | 'documentDateAsc';
 
@@ -83,6 +84,7 @@ const PAGE_SIZE = 10;
     EmptyStateComponent,
     ButtonComponent,
     IconButtonComponent,
+    SortTriggerComponent,
   ],
   templateUrl: './document-list.component.html',
   styleUrl: './document-list.component.scss',

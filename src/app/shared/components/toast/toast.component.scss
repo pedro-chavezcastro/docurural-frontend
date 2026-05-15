@@ -54,13 +54,13 @@
 // ─── Variantes ───────────────────────────────────────────────────────
 :host(.toast--info) {
   background-color: var(--color-primary-light);
-  border-color: #c8ddf1;
+  border-color: var(--color-primary-border);
   color: var(--color-primary-dark);
 }
 
 :host(.toast--success) {
   background-color: var(--color-success-light);
-  border-color: #b7ddb9;
+  border-color: var(--color-success-border);
   color: var(--color-success);
 }
 

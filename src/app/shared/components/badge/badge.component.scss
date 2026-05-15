@@ -40,10 +40,10 @@
 }
 
 .badge--neutral {
-  background: #EEF1F4;
-  color: #4A5A6E;
+  background: var(--color-neutral-light);
+  color: var(--color-neutral);
 
-  .badge__dot { background: #8898AB; }
+  .badge__dot { background: var(--color-neutral-accent); }
 }
 
 .badge--warning {

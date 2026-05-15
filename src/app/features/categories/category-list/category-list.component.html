@@ -12,33 +12,12 @@
 
 <!-- Action bar -->
 <div class="action-bar" [class.action-bar--disabled]="!loading() && totalCategories() === 0">
-  <button
-    type="button"
-    class="sort-trigger"
-    [matMenuTriggerFor]="sortMenu"
+  <app-sort-trigger
+    [options]="sortOptions"
+    [activeValue]="selectedSort()"
     [disabled]="!loading() && totalCategories() === 0"
-    aria-label="Ordenar listado"
-  >
-    <mat-icon class="sort-trigger__icon" aria-hidden="true">swap_vert</mat-icon>
-    <span class="sort-trigger__label">
-      <span class="sort-trigger__prefix">Ordenar:</span>
-      {{ currentSortLabel() }}
-    </span>
-    <mat-icon class="sort-trigger__chevron" aria-hidden="true">expand_more</mat-icon>
-  </button>
-
-  <mat-menu #sortMenu="matMenu" panelClass="sort-menu" xPosition="before">
-    @for (opt of sortOptions; track opt.value) {
-      <button
-        type="button"
-        mat-menu-item
-        [class.sort-menu__item--active]="selectedSort() === opt.value"
-        (click)="onSortChange(opt.value)"
-      >
-        {{ opt.label }}
-      </button>
-    }
-  </mat-menu>
+    (sortChange)="onSortChange($any($event))"
+  />
 </div>
 
 <!-- Contador -->
