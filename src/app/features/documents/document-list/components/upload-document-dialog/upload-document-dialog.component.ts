@@ -31,6 +31,7 @@ import {
   UploadDocumentResponse,
 } from '../../../../../core/models/upload-document.models';
 import { formatFileSize } from '../../utils/file-size';
+import { formatYmd } from '../../utils/format-ymd';
 
 const MY_DATE_FORMATS = {
   parse: {
@@ -49,13 +50,6 @@ export type UploadDocumentDialogData = Record<string, never>;
 export type UploadDocumentDialogResult =
   | { kind: 'uploaded'; document: UploadDocumentResponse }
   | undefined;
-
-function formatYmd(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
 
 @Component({
   selector: 'app-upload-document-dialog',

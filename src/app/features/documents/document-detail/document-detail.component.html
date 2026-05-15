@@ -8,6 +8,16 @@
       <span>Volver</span>
     </app-button>
     @if (metadata() && !loadingBlob()) {
+      @if (canEdit()) {
+        <app-button
+          class="header-actions-buttons"
+          variant="secondary"
+          (click)="onEdit()"
+        >
+          <mat-icon>edit</mat-icon>
+          <span>Editar metadatos</span>
+        </app-button>
+      }
       <app-button
         class="header-actions-buttons"
         variant="primary"

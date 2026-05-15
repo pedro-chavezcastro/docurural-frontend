@@ -11,6 +11,10 @@ import {
   UploadDocumentResponse,
 } from '../models/upload-document.models';
 import { DocumentDetailResponse } from '../models/document-detail.model';
+import {
+  UpdateDocumentMetadataRequest,
+  UpdateDocumentMetadataResponse,
+} from '../models/update-document.models';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -60,5 +64,12 @@ export class DocumentsService {
     });
   }
 
-  // update, delete — se implementarán en HU-13, HU-14
+  update(id: number, payload: UpdateDocumentMetadataRequest): Observable<UpdateDocumentMetadataResponse> {
+    return this.http.put<UpdateDocumentMetadataResponse>(
+      `${environment.apiBaseUrl}/documents/${id}`,
+      payload,
+    );
+  }
+
+  // delete — se implementará en HU-14
 }

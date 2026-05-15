@@ -11,8 +11,10 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../core/services/auth.service';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DocumentDetailResponse, isPreviewableFormat } from '../../../core/models/document-detail.model';
@@ -24,6 +26,12 @@ import {
   parseFilenameFromContentDisposition,
   triggerBlobDownload,
 } from '../document-list/utils/download-blob';
+import { canEditDocument } from '../document-list/utils/document-permissions';
+import {
+  EditDocumentMetadataDialogComponent,
+  EditDocumentMetadataDialogData,
+  EditDocumentMetadataDialogResult,
+} from '../document-list/components/edit-document-metadata-dialog/edit-document-metadata-dialog.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -38,6 +46,7 @@ type ErrorKind = 'not-found' | 'file-missing' | 'network';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    MatDialogModule,
     MatIconModule,
     MatProgressSpinnerModule,
     PageHeaderComponent,
@@ -56,6 +65,10 @@ export class DocumentDetailComponent implements OnDestroy {
   private readonly sanitizer     = inject(DomSanitizer);
   private readonly docService    = inject(DocumentsService);
   private readonly notifications = inject(NotificationService);
+  private readonly auth          = inject(AuthService);
+  private readonly dialog        = inject(MatDialog);
+
+  private docId = NaN;
 
   protected readonly imageContainer = viewChild<ElementRef<HTMLElement>>('imageContainer');
 
@@ -79,6 +92,13 @@ export class DocumentDetailComponent implements OnDestroy {
 
   protected readonly zoomPercent = computed(() => Math.round(this.zoomLevel() * 100));
 
+  protected readonly canEdit = computed(() => {
+    const meta = this.metadata();
+    const user = this.auth.currentUser();
+    if (!meta || !user) return false;
+    return canEditDocument(user.role, user.fullName, meta.uploadedBy.fullName);
+  });
+
   protected readonly formatFileSize = formatFileSize;
 
   private readonly docDateFormatter = new Intl.DateTimeFormat('es-CO', {
@@ -99,6 +119,7 @@ export class DocumentDetailComponent implements OnDestroy {
       return;
     }
 
+    this.docId = id;
     this.loadDocument(id);
   }
 
@@ -108,6 +129,26 @@ export class DocumentDetailComponent implements OnDestroy {
 
   protected onBack(): void {
     this.router.navigate(['/documents']);
+  }
+
+  protected onEdit(): void {
+    const meta = this.metadata();
+    if (!meta) return;
+    const ref = this.dialog.open<
+      EditDocumentMetadataDialogComponent,
+      EditDocumentMetadataDialogData,
+      EditDocumentMetadataDialogResult
+    >(EditDocumentMetadataDialogComponent, {
+      data: { document: meta },
+      width: '620px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result?.kind === 'updated') {
+        this.loadDocument(this.docId);
+      }
+    });
   }
 
   protected onDownload(): void {

@@ -29,6 +29,11 @@ import {
   UploadDocumentsBatchDialogData,
   UploadDocumentsBatchDialogResult,
 } from './components/upload-documents-batch-dialog/upload-documents-batch-dialog.component';
+import {
+  EditDocumentMetadataDialogComponent,
+  EditDocumentMetadataDialogData,
+  EditDocumentMetadataDialogResult,
+} from './components/edit-document-metadata-dialog/edit-document-metadata-dialog.component';
 import { DocumentFormatIconComponent } from './components/document-format-icon.component';
 import { DocumentCategoryPillComponent } from './components/document-category-pill.component';
 import { DocumentRowActionsComponent } from './components/document-row-actions.component';
@@ -238,7 +243,33 @@ export class DocumentListComponent {
   }
 
   protected onEdit(doc: Document): void {
-    this.notifications.info('Próximamente', `La edición de "${doc.title}" se implementará en la HU-13.`);
+    this.documentsService.getById(doc.id).subscribe({
+      next: (detail) => {
+        const ref = this.dialog.open<
+          EditDocumentMetadataDialogComponent,
+          EditDocumentMetadataDialogData,
+          EditDocumentMetadataDialogResult
+        >(EditDocumentMetadataDialogComponent, {
+          data: { document: detail },
+          width: '620px',
+          maxWidth: '95vw',
+          autoFocus: 'first-tabbable',
+        });
+        ref.afterClosed().subscribe((result) => {
+          if (result?.kind === 'updated') {
+            this.loadDocuments();
+          }
+        });
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 401) return;
+        if (err.status === 404) {
+          this.notifications.error('Documento no encontrado', 'El documento ya no existe o fue eliminado.');
+          return;
+        }
+        this.notifications.error('Error al abrir el editor', 'No fue posible cargar los datos del documento. Intente nuevamente.');
+      },
+    });
   }
 
   protected onDelete(doc: Document): void {
