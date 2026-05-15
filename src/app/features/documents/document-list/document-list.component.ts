@@ -34,6 +34,11 @@ import {
   EditDocumentMetadataDialogData,
   EditDocumentMetadataDialogResult,
 } from './components/edit-document-metadata-dialog/edit-document-metadata-dialog.component';
+import {
+  DeleteDocumentDialogComponent,
+  DeleteDocumentDialogData,
+  DeleteDocumentDialogResult,
+} from './components/delete-document-dialog/delete-document-dialog.component';
 import { DocumentFormatIconComponent } from './components/document-format-icon.component';
 import { DocumentCategoryPillComponent } from './components/document-category-pill.component';
 import { DocumentRowActionsComponent } from './components/document-row-actions.component';
@@ -273,7 +278,22 @@ export class DocumentListComponent {
   }
 
   protected onDelete(doc: Document): void {
-    this.notifications.info('Próximamente', `La eliminación de "${doc.title}" se implementará en la HU-14.`);
+    const ref = this.dialog.open<
+      DeleteDocumentDialogComponent,
+      DeleteDocumentDialogData,
+      DeleteDocumentDialogResult
+    >(DeleteDocumentDialogComponent, {
+      data: { document: doc },
+      width: '480px',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result?.success) return;
+      this.notifications.success('Documento eliminado', result.message);
+      this.reloadAfterDelete();
+    });
   }
 
   protected onUploadSingle(): void {
@@ -353,5 +373,13 @@ export class DocumentListComponent {
     if (!value) return null;
     const d = new Date(value);
     return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  private reloadAfterDelete(): void {
+    const isLastItemOnPage = this.documents().length === 1;
+    if (isLastItemOnPage && this.currentPage() > 1) {
+      this.currentPage.update((page) => page - 1);
+    }
+    this.loadDocuments();
   }
 }

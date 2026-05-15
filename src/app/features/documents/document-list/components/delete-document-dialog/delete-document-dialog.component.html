@@ -1,0 +1,57 @@
+<div class="dialog">
+  @if (errorMessage()) {
+    <app-alert variant="error" class="dialog__alert">{{ errorMessage() }}</app-alert>
+  }
+
+  <div class="dialog__header">
+    <div class="dialog__icon" aria-hidden="true">
+      <mat-icon>warning_amber</mat-icon>
+    </div>
+    <div class="dialog__copy">
+      <h2 class="dialog__title" mat-dialog-title>¿Eliminar este documento?</h2>
+      <p class="dialog__message">
+        Esta acción no se puede deshacer. El documento se eliminará del repositorio y no podrá recuperarse.
+      </p>
+    </div>
+  </div>
+
+  <div class="dialog__doc-card">
+    <div class="dialog__doc-icon" aria-hidden="true">
+      <mat-icon>description</mat-icon>
+      <span class="dialog__doc-badge">{{ data.document.fileFormat }}</span>
+    </div>
+    <div class="dialog__doc-copy">
+      <div class="dialog__doc-title">{{ data.document.title }}</div>
+      <div class="dialog__doc-meta">
+        {{ data.document.fileFormat }} · {{ formatSize(data.document.fileSizeBytes) }} · subido por {{ data.document.uploadedBy }}
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog__confirm-block">
+    <label class="dialog__confirm-label" for="delete-confirmation-input">
+      Para confirmar, escriba
+      <code class="dialog__confirm-code">{{ confirmPhrase }}</code>
+      <span class="dialog__required" aria-hidden="true">*</span>
+    </label>
+    <input
+      id="delete-confirmation-input"
+      class="dialog__confirm-input"
+      type="text"
+      [value]="confirmationText()"
+      (input)="onConfirmationText($any($event.target).value)"
+      autocomplete="off"
+      [attr.aria-label]="'Escriba ' + confirmPhrase + ' para confirmar eliminación'"
+    />
+  </div>
+
+  <div class="dialog__actions">
+    <app-button variant="secondary" [disabled]="loading()" (click)="cancel()">
+      Cancelar
+    </app-button>
+    <app-button variant="danger" [loading]="loading()" [disabled]="actionDisabled()" (click)="confirm()">
+      <mat-icon aria-hidden="true">delete_outline</mat-icon>
+      Sí, eliminar documento
+    </app-button>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import { HttpClient, HttpEvent, HttpParams, HttpResponse } from '@angular/common
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
+  DeleteDocumentResponse,
   DocumentListParams,
   DocumentListResponse,
 } from '../models/document-list.models';
@@ -71,5 +72,7 @@ export class DocumentsService {
     );
   }
 
-  // delete — se implementará en HU-14
+  deleteLogical(id: number): Observable<DeleteDocumentResponse> {
+    return this.http.delete<DeleteDocumentResponse>(`${environment.apiBaseUrl}/documents/${id}`);
+  }
 }

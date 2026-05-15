@@ -17,3 +17,8 @@ export interface DocumentListResponse {
   pageSize: number;
   documents: Document[];
 }
+
+export interface DeleteDocumentResponse {
+  id: number;
+  message: string;
+}
